@@ -1,0 +1,82 @@
+name: CI/CD Laravel
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    services:
+      sqlite:
+        image: nouchka/sqlite3:latest
+        ports:
+          - 3306:3306
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, pdo, pdo_sqlite, bcmath, gd, xml
+          coverage: none
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Install NPM dependencies
+        run: npm install
+
+      - name: PHP Lint (Pint)
+        run: ./vendor/bin/pint --test
+
+      - name: JS Lint (ESLint)
+        run: |
+          if [ -f node_modules/.bin/eslint ]; then
+            npx eslint resources/js || exit 1
+          else
+            echo "No ESLint found, skipping JS lint."
+          fi
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Copy .env.example to .env
+        run: cp .env.example .env
+
+      - name: Generate Laravel key
+        run: php artisan key:generate
+
+      - name: Run migrations
+        run: php artisan migrate --env=testing
+
+      - name: Run tests
+        run: php artisan test --env=testing
+
+  docker-push:
+    needs: build-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/food-ordering-platform:latest .
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/food-ordering-platform:latest
