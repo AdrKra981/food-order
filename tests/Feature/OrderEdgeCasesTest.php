@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Restaurant;
 use App\Models\MenuCategory;
 use App\Models\MenuItem;
-use App\Models\PromoCode;
+use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

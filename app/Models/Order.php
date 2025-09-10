@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Enums\OrderStatus; // Assuming you have an OrderStatus enum defined
+use Illuminate\Database\Eloquent\Model; // Assuming you have an OrderStatus enum defined
 
 class Order extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'user_id',
         'restaurant_id',
@@ -66,27 +67,27 @@ class Order extends Model
     {
         return $this->hasOne(PromoCodeUsage::class);
     }
-    
+
     public function scopePending($query)
     {
         return $query->where('status', 'pending');
     }
-    
+
     public function scopeCompleted($query)
     {
         return $query->where('status', 'completed');
     }
-    
+
     public function scopeCancelled($query)
     {
         return $query->where('status', 'cancelled');
     }
-    
+
     public function scopeByRestaurant($query, $restaurantId)
     {
         return $query->where('restaurant_id', $restaurantId);
     }
-    
+
     public function scopeByUser($query, $userId)
     {
         return $query->where('user_id', $userId);

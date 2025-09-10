@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\MenuCategory;
-use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,9 +14,9 @@ class MenuCategoryController extends Controller
         $categories = MenuCategory::whereHas('restaurant', function ($q) {
             $q->where('user_id', auth()->id());
         })->with('restaurant')
-          ->withCount('menuItems')
-          ->orderBy('sort_order')
-          ->get();
+            ->withCount('menuItems')
+            ->orderBy('sort_order')
+            ->get();
 
         return Inertia::render('Owner/MenuCategories/Index', [
             'categories' => $categories,
@@ -48,6 +47,7 @@ class MenuCategoryController extends Controller
         if ($request->wantsJson()) {
             return response()->json($category, 201);
         }
+
         return redirect()->route('owner.menu-categories.index');
     }
 
@@ -74,6 +74,7 @@ class MenuCategoryController extends Controller
         if ($request->wantsJson()) {
             return response()->json($menuCategory, 200);
         }
+
         return redirect()->route('owner.menu-categories.index');
     }
 
@@ -85,11 +86,12 @@ class MenuCategoryController extends Controller
         if ($menuCategory->menuItems()->count() > 0) {
             if (request()->wantsJson()) {
                 return response()->json([
-                    'message' => 'Cannot delete category that contains menu items. Please remove all items first.'
+                    'message' => 'Cannot delete category that contains menu items. Please remove all items first.',
                 ], 422);
             }
+
             return back()->withErrors([
-                'message' => 'Cannot delete category that contains menu items. Please remove all items first.'
+                'message' => 'Cannot delete category that contains menu items. Please remove all items first.',
             ]);
         }
 
@@ -97,6 +99,7 @@ class MenuCategoryController extends Controller
         if (request()->wantsJson()) {
             return response()->json(['success' => true], 200);
         }
+
         return redirect()->route('owner.menu-categories.index')->with('success', 'Category deleted successfully.');
     }
 
@@ -105,12 +108,12 @@ class MenuCategoryController extends Controller
         $this->authorize('update', $menuCategory);
 
         $menuCategory->update([
-            'is_available' => !$menuCategory->is_available
+            'is_available' => ! $menuCategory->is_available,
         ]);
 
         return response()->json([
             'success' => true,
-            'is_available' => $menuCategory->is_available
+            'is_available' => $menuCategory->is_available,
         ]);
     }
 }

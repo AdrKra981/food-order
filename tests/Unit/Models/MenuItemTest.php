@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Models;
 
-use App\Models\MenuItem;
 use App\Models\MenuCategory;
+use App\Models\MenuItem;
 use App\Models\Restaurant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

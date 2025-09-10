@@ -2,10 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\CartItem;
 use App\Models\PromoCode;
 use App\Models\PromoCodeUsage;
-use App\Models\CartItem;
-use App\Models\MenuCategory;
 
 class PromoCodeService
 {
@@ -15,11 +14,11 @@ class PromoCodeService
             ->where('restaurant_id', $restaurantId)
             ->first();
 
-        if (!$promoCode) {
+        if (! $promoCode) {
             return ['valid' => false, 'message' => 'Promo code not found.'];
         }
 
-        if (!$promoCode->isValid()) {
+        if (! $promoCode->isValid()) {
             return ['valid' => false, 'message' => 'Promo code is not valid or has expired.'];
         }
 
@@ -27,7 +26,7 @@ class PromoCodeService
             return ['valid' => false, 'message' => 'Promo code usage limit has been reached.'];
         }
 
-        if (!$promoCode->canCustomerUse($userId)) {
+        if (! $promoCode->canCustomerUse($userId)) {
             return ['valid' => false, 'message' => 'You have reached the usage limit for this promo code.'];
         }
 
@@ -37,7 +36,7 @@ class PromoCodeService
     public function calculateCartDiscount($promoCode, $userId)
     {
         $cartItems = CartItem::where('user_id', $userId)->with('menuItem.menuCategory')->get();
-        
+
         if ($cartItems->isEmpty()) {
             return ['discount' => 0, 'applicable_amount' => 0];
         }
@@ -49,8 +48,8 @@ class PromoCodeService
         // Check minimum order amount
         if ($totalAmount < $promoCode->minimum_order_amount) {
             return [
-                'valid' => false, 
-                'message' => 'Minimum order amount of $' . number_format($promoCode->minimum_order_amount, 2) . ' required.'
+                'valid' => false,
+                'message' => 'Minimum order amount of $'.number_format($promoCode->minimum_order_amount, 2).' required.',
             ];
         }
 
@@ -61,7 +60,7 @@ class PromoCodeService
             'valid' => true,
             'discount' => $discount,
             'applicable_amount' => $applicableAmount,
-            'total_amount' => $totalAmount
+            'total_amount' => $totalAmount,
         ];
     }
 
@@ -79,6 +78,7 @@ class PromoCodeService
             if (in_array($item->menuItem->menu_category_id, $promoCode->applicable_categories)) {
                 return $item->quantity * $item->menuItem->price;
             }
+
             return 0;
         });
     }

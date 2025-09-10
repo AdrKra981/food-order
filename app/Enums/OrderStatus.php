@@ -20,6 +20,7 @@ enum OrderStatus: string
             self::CANCELLED => 'Cancelled',
         };
     }
+
     public function color(): string
     {
         return match ($this) {

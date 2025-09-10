@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Enums\UserRole;
 
 class User extends Authenticatable
 {
@@ -64,7 +64,7 @@ class User extends Authenticatable
      */
     public function restaurants()
     {
-    return $this->hasMany(Restaurant::class, 'user_id');
+        return $this->hasMany(Restaurant::class, 'user_id');
     }
 
     /**
@@ -104,7 +104,7 @@ class User extends Authenticatable
      */
     public function isCustomer(): bool
     {
-    return $this->role === UserRole::CLIENT;
+        return $this->role === UserRole::CLIENT;
     }
 
     /**

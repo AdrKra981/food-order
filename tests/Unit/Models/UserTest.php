@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
-use App\Models\User;
+use App\Enums\UserRole;
+use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\Restaurant;
-use App\Models\CartItem;
-use App\Enums\UserRole;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Tests\TestCase;
 
 class UserTest extends TestCase
 {
@@ -28,7 +28,7 @@ class UserTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
         $this->assertEquals('John Doe', $user->name);
         $this->assertEquals('john@example.com', $user->email);
-    $this->assertEquals(UserRole::CLIENT, $user->role);
+        $this->assertEquals(UserRole::CLIENT, $user->role);
     }
 
     /** @test */
@@ -112,7 +112,7 @@ class UserTest extends TestCase
     public function it_can_have_cart_items()
     {
         $user = User::factory()->create();
-        
+
         $cartItem = CartItem::factory()->create([
             'user_id' => $user->id,
         ]);
@@ -125,7 +125,7 @@ class UserTest extends TestCase
     public function it_can_check_if_user_is_owner()
     {
         $owner = User::factory()->create(['role' => UserRole::OWNER]);
-    $customer = User::factory()->create(['role' => UserRole::CLIENT]);
+        $customer = User::factory()->create(['role' => UserRole::CLIENT]);
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
 
         $this->assertTrue($owner->isOwner());
@@ -137,7 +137,7 @@ class UserTest extends TestCase
     public function it_can_check_if_user_is_customer()
     {
         $owner = User::factory()->create(['role' => UserRole::OWNER]);
-    $customer = User::factory()->create(['role' => UserRole::CLIENT]);
+        $customer = User::factory()->create(['role' => UserRole::CLIENT]);
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
 
         $this->assertFalse($owner->isCustomer());
@@ -149,7 +149,7 @@ class UserTest extends TestCase
     public function it_can_check_if_user_is_admin()
     {
         $owner = User::factory()->create(['role' => UserRole::OWNER]);
-    $customer = User::factory()->create(['role' => UserRole::CLIENT]);
+        $customer = User::factory()->create(['role' => UserRole::CLIENT]);
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
 
         $this->assertFalse($owner->isAdmin());
@@ -207,11 +207,11 @@ class UserTest extends TestCase
     /** @test */
     public function it_can_have_different_roles()
     {
-    $customer = User::factory()->create(['role' => UserRole::CLIENT]);
+        $customer = User::factory()->create(['role' => UserRole::CLIENT]);
         $owner = User::factory()->create(['role' => UserRole::OWNER]);
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
 
-    $this->assertEquals(UserRole::CLIENT, $customer->role);
+        $this->assertEquals(UserRole::CLIENT, $customer->role);
         $this->assertEquals(UserRole::OWNER, $owner->role);
         $this->assertEquals(UserRole::ADMIN, $admin->role);
     }

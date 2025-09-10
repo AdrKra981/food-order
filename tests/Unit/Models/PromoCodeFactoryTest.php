@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
 use App\Models\PromoCode;
 use App\Models\Restaurant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class PromoCodeFactoryTest extends TestCase
 {
@@ -16,10 +16,10 @@ class PromoCodeFactoryTest extends TestCase
     {
         // Create a restaurant owner first
         $owner = User::factory()->create(['role' => 'OWNER']);
-        
+
         // Create a restaurant
         $restaurant = Restaurant::factory()->create(['user_id' => $owner->id]);
-        
+
         // Try to create a promo code manually with valid data
         $promoCode = PromoCode::create([
             'restaurant_id' => $restaurant->id,

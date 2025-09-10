@@ -15,7 +15,7 @@ class CheckOwnerApproval
 
         if ($user->role === \App\Enums\UserRole::OWNER) {
             $restaurant = $user->restaurant;
-            if (!$restaurant || !$restaurant->is_accepted) {
+            if (! $restaurant || ! $restaurant->is_accepted) {
                 if ($request->wantsJson()) {
                     return response()->json(['message' => 'Your restaurant is not approved.'], 403);
                 }
@@ -23,6 +23,7 @@ class CheckOwnerApproval
                 if ($request->is('owner/*')) {
                     return response('Forbidden', 403);
                 }
+
                 return redirect()->route('owner.awaiting-approval');
             }
         }

@@ -30,10 +30,10 @@ return new class extends Migration
             $table->dropColumn([
                 'order_number',
                 'customer_name',
-                'customer_email', 
+                'customer_email',
                 'customer_phone',
                 'delivery_type',
-                'notes'
+                'notes',
             ]);
         });
     }

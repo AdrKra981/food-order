@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->decimal('discount_amount', 8, 2);
             $table->timestamps();
-            
+
             $table->unique(['promo_code_id', 'order_id']);
             $table->index(['user_id', 'promo_code_id']);
         });

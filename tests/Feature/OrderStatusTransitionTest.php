@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Restaurant;
-use App\Models\Order;
 use App\Enums\OrderStatus;
+use App\Models\Order;
+use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -62,13 +62,13 @@ class OrderStatusTransitionTest extends TestCase
         ]);
 
         $this->actingAs($owner);
-    $response = $this->patchJson(route('owner.orders.update-status', ['order' => $order->id]), [
+        $response = $this->patchJson(route('owner.orders.update-status', ['order' => $order->id]), [
             'status' => 'accepted',
         ], ['Accept' => 'application/json']);
         $response->assertStatus(200);
         $this->assertEquals(OrderStatus::ACCEPTED, $order->fresh()->status);
 
-    $response = $this->patchJson(route('owner.orders.update-status', ['order' => $order->id]), [
+        $response = $this->patchJson(route('owner.orders.update-status', ['order' => $order->id]), [
             'status' => 'completed',
         ], ['Accept' => 'application/json']);
         $response->assertStatus(200);

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Owner;
 
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\Order;
-use App\Enums\OrderStatus;
 
 class OrderController extends Controller
 {
@@ -15,7 +15,7 @@ class OrderController extends Controller
         $user = auth()->user();
         $restaurant = $user->restaurant;
 
-        if (!$restaurant) {
+        if (! $restaurant) {
             return redirect()->route('owner.restaurant.edit')->with('error', 'Please set up your restaurant first.');
         }
 
@@ -36,11 +36,11 @@ class OrderController extends Controller
 
         // Apply search filter
         if ($search) {
-            $ordersQuery->where(function($query) use ($search) {
+            $ordersQuery->where(function ($query) use ($search) {
                 $query->where('order_number', 'like', "%{$search}%")
-                      ->orWhere('customer_name', 'like', "%{$search}%")
-                      ->orWhere('customer_email', 'like', "%{$search}%")
-                      ->orWhere('customer_phone', 'like', "%{$search}%");
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhere('customer_email', 'like', "%{$search}%")
+                    ->orWhere('customer_phone', 'like', "%{$search}%");
             });
         }
 
@@ -77,15 +77,16 @@ class OrderController extends Controller
         $restaurant = $user->restaurant;
 
         // If no restaurant, or order does not belong to this restaurant, return 403 for API/JSON requests
-        if (!$restaurant || $order->restaurant_id !== $restaurant->id) {
+        if (! $restaurant || $order->restaurant_id !== $restaurant->id) {
             if ($request->wantsJson()) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
+
             return redirect()->route('restaurant.edit')->with('error', 'Please set up your restaurant first.');
         }
 
         $request->validate([
-            'status' => 'required|in:pending,accepted,in_progress,completed,cancelled'
+            'status' => 'required|in:pending,accepted,in_progress,completed,cancelled',
         ]);
 
         $statusMap = [
@@ -96,12 +97,12 @@ class OrderController extends Controller
             'cancelled' => OrderStatus::CANCELLED,
         ];
         $order->update([
-            'status' => $statusMap[$request->status]
+            'status' => $statusMap[$request->status],
         ]);
 
         return response()->json([
             'message' => 'Order status updated successfully',
-            'order' => $order->load('user')
+            'order' => $order->load('user'),
         ]);
     }
 }

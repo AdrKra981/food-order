@@ -3,9 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\CartItem;
-use App\Models\User;
 use App\Models\MenuItem;
 use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CartItemFactory extends Factory

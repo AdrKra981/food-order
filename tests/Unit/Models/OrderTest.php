@@ -2,15 +2,15 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
+use App\Enums\OrderStatus;
+use App\Models\MenuItem;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\PromoCode;
 use App\Models\Restaurant;
 use App\Models\User;
-use App\Models\PromoCode;
-use App\Models\MenuItem;
-use App\Enums\OrderStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class OrderTest extends TestCase
 {
@@ -19,7 +19,7 @@ class OrderTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->user = User::factory()->create();
         $this->restaurant = Restaurant::factory()->create();
     }
@@ -185,7 +185,6 @@ class OrderTest extends TestCase
 
         $this->assertEquals(33.00, $calculatedTotal);
     }
-
 
     /** @test */
     public function it_can_have_different_delivery_types()

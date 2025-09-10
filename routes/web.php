@@ -8,29 +8,29 @@ Route::middleware('auth')->group(function () {
     Route::delete('/restaurants/{id}', [\App\Http\Controllers\RestaurantController::class, 'destroy']);
 });
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\RestaurantApprovalController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\PaymentController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
+use App\Http\Controllers\Owner\MediaController;
 use App\Http\Controllers\Owner\MenuCategoryController;
 use App\Http\Controllers\Owner\MenuItemController;
-use App\Http\Controllers\Owner\ReportsController;
 use App\Http\Controllers\Owner\OrderController as OwnerOrderController;
-use App\Http\Controllers\Admin\RestaurantApprovalController;
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Owner\MediaController;
 use App\Http\Controllers\Owner\PromoCodeController;
+use App\Http\Controllers\Owner\ReportsController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/restaurant/{restaurant}', [HomeController::class, 'show'])->name('restaurant.show');
 
 // Debug route to test CSRF token
-Route::post('/api/test-csrf', function() {
+Route::post('/api/test-csrf', function () {
     return response()->json(['message' => 'CSRF token is working!', 'timestamp' => now()]);
 });
 
@@ -48,6 +48,7 @@ Route::prefix('api/cart')->name('cart.')->group(function () {
 
 // Promo code application route (for feature/API tests)
 use App\Http\Controllers\PromoCodeApplicationController;
+
 Route::post('/api/orders/apply-promo', [PromoCodeApplicationController::class, 'apply'])->name('orders.apply-promo');
 
 // Promo code validation API (requires auth)
@@ -58,7 +59,7 @@ Route::middleware('auth')->prefix('api/promo-codes')->name('api.promo-codes.')->
 // Checkout route
 Route::get('/checkout', function () {
     return Inertia::render('Checkout', [
-        'stripePublicKey' => config('stripe.public_key')
+        'stripePublicKey' => config('stripe.public_key'),
     ]);
 })->name('checkout');
 
@@ -70,13 +71,13 @@ Route::post('/payment/confirm', [PaymentController::class, 'confirmPayment'])->n
 
 Route::get('/orders/success', function () {
     return Inertia::render('OrderSuccess', [
-        'orderNumbers' => session('order_numbers', '')
+        'orderNumbers' => session('order_numbers', ''),
     ]);
 })->name('orders.success');
 
 Route::get('/dashboard', function () {
     $user = Auth::user();
-    
+
     // Redirect based on user role
     switch ($user->role) {
         case App\Enums\UserRole::ADMIN:
@@ -93,18 +94,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // Customer Orders
     Route::prefix('customer')->name('customer.')->group(function () {
-    Route::get('/orders', [App\Http\Controllers\Customer\OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [App\Http\Controllers\Customer\OrderController::class, 'show'])->name('orders.show');
-    Route::post('/orders', [App\Http\Controllers\Customer\OrderController::class, 'store'])->name('orders.store');
-    Route::post('/orders/{order}/reorder', [App\Http\Controllers\Customer\OrderController::class, 'reorder'])->name('orders.reorder');
+        Route::get('/orders', [App\Http\Controllers\Customer\OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [App\Http\Controllers\Customer\OrderController::class, 'show'])->name('orders.show');
+        Route::post('/orders', [App\Http\Controllers\Customer\OrderController::class, 'store'])->name('orders.store');
+        Route::post('/orders/{order}/reorder', [App\Http\Controllers\Customer\OrderController::class, 'reorder'])->name('orders.reorder');
     });
-    
+
     // Debug route - remove after testing
     Route::get('/debug-user', function () {
         $user = Auth::user();
+
         return response()->json([
             'user' => $user,
             'restaurant' => $user->restaurant,
@@ -116,12 +118,12 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified', 'is_admin'])->prefix('admin')->group(function () {
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    
+
     // Restaurant Management
     Route::get('/restaurants', [AdminController::class, 'restaurants'])->name('admin.restaurants');
     Route::post('/restaurants/{restaurant}/toggle-status', [AdminController::class, 'toggleRestaurantStatus'])->name('admin.restaurants.toggle-status');
     Route::delete('/restaurants/{restaurant}', [AdminController::class, 'deleteRestaurant'])->name('admin.restaurants.delete');
-    
+
     // Pending Restaurant Approvals (existing functionality)
     Route::get('/restaurants/pending', [RestaurantApprovalController::class, 'index'])->name('admin.restaurants.pending');
     Route::post('/restaurants/{restaurant}/accept', [RestaurantApprovalController::class, 'accept'])->name('admin.restaurants.accept');
@@ -134,7 +136,7 @@ Route::get('/owner/awaiting-approval', function () {
 
 Route::middleware(['auth', 'verified', 'owner.approved'])->prefix('owner')->name('owner.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\Owner\DashboardController::class, 'index'])->name('dashboard');
-    
+
     // Restaurant settings
     Route::get('/restaurant/edit', [App\Http\Controllers\Owner\RestaurantController::class, 'edit'])->name('restaurant.edit');
     Route::put('/restaurant', [App\Http\Controllers\Owner\RestaurantController::class, 'update'])->name('restaurant.update');

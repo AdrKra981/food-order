@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Enums\UserRole;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -60,7 +60,7 @@ class RegisteredUserController extends Controller
         ]);
 
         // Redirect based on role
-        return match($user->role) {
+        return match ($user->role) {
             UserRole::ADMIN => redirect()->route('admin.dashboard'),
             UserRole::OWNER => redirect()->route('owner.dashboard'),
             UserRole::CLIENT => redirect()->route('dashboard'),

@@ -1,5 +1,3 @@
-import { BuildingStorefrontIcon } from "@heroicons/react/24/outline";
-
 export default function LoadingSpinner({
     size = "medium",
     text = "Loading...",

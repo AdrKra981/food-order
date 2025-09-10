@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Restaurant extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'name',
         'address',
@@ -34,15 +35,18 @@ class Restaurant extends Model
         'closing_hours' => 'datetime',
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function menuCategories(){
+    public function menuCategories()
+    {
         return $this->hasMany(MenuCategory::class);
     }
 
-    public function menuItems(){
+    public function menuItems()
+    {
         return $this->hasMany(MenuItem::class);
     }
 
@@ -51,7 +55,8 @@ class Restaurant extends Model
         return $this->hasMany(Media::class);
     }
 
-    public function orders(){
+    public function orders()
+    {
         return $this->hasMany(Order::class);
     }
 

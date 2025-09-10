@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { router, usePage } from "@inertiajs/react";
 import {
     ShoppingCartIcon,

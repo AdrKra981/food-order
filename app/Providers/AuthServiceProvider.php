@@ -2,13 +2,12 @@
 
 namespace App\Providers;
 
+use App\Enums\UserRole;
+use App\Models\MenuCategory;
+// Example: Registering policies
+use App\Policies\MenuCategoryPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-
-// Example: Registering policies
-use App\Models\MenuCategory;
-use App\Policies\MenuCategoryPolicy;
-use App\Enums\UserRole;
 
 class AuthServiceProvider extends ServiceProvider
 {

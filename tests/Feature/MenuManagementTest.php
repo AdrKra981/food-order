@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Restaurant;
+use App\Enums\UserRole;
 use App\Models\MenuCategory;
 use App\Models\MenuItem;
-use App\Enums\UserRole;
+use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -53,9 +53,9 @@ class MenuManagementTest extends TestCase
         $owner = User::factory()->create(['role' => UserRole::OWNER]);
         $restaurant = Restaurant::factory()->create(['user_id' => $owner->id]);
         $category = MenuCategory::factory()->create(['restaurant_id' => $restaurant->id]);
-    $response = $this->actingAs($owner)->json('DELETE', "/owner/menu-categories/{$category->id}");
-    $response->assertStatus(200);
-    $this->assertDatabaseMissing('menu_categories', ['id' => $category->id]);
+        $response = $this->actingAs($owner)->json('DELETE', "/owner/menu-categories/{$category->id}");
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('menu_categories', ['id' => $category->id]);
     }
 
     public function test_owner_can_toggle_menu_category_availability()
@@ -63,10 +63,10 @@ class MenuManagementTest extends TestCase
         $owner = User::factory()->create(['role' => UserRole::OWNER]);
         $restaurant = Restaurant::factory()->create(['user_id' => $owner->id]);
         $category = MenuCategory::factory()->create(['restaurant_id' => $restaurant->id, 'is_available' => true]);
-    $response = $this->actingAs($owner)->json('PATCH', "/owner/menu-categories/{$category->id}/toggle-availability");
-    $response->assertStatus(200);
-    $category->refresh();
-    $this->assertFalse($category->is_available);
+        $response = $this->actingAs($owner)->json('PATCH', "/owner/menu-categories/{$category->id}/toggle-availability");
+        $response->assertStatus(200);
+        $category->refresh();
+        $this->assertFalse($category->is_available);
     }
 
     public function test_owner_can_create_menu_item()
@@ -114,8 +114,8 @@ class MenuManagementTest extends TestCase
         $restaurant = Restaurant::factory()->create(['user_id' => $owner->id]);
         $category = MenuCategory::factory()->create(['restaurant_id' => $restaurant->id]);
         $item = MenuItem::factory()->create(['restaurant_id' => $restaurant->id, 'menu_category_id' => $category->id]);
-    $response = $this->actingAs($owner)->json('DELETE', "/owner/menu-items/{$item->id}");
-    $response->assertStatus(200);
-    $this->assertDatabaseMissing('menu_items', ['id' => $item->id]);
+        $response = $this->actingAs($owner)->json('DELETE', "/owner/menu-items/{$item->id}");
+        $response->assertStatus(200);
+        $this->assertDatabaseMissing('menu_items', ['id' => $item->id]);
     }
 }

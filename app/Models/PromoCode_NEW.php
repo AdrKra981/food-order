@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class PromoCode extends Model
 {
@@ -63,8 +62,9 @@ class PromoCode extends Model
     public function scopeValid($query)
     {
         $now = now();
+
         return $query->where('valid_from', '<=', $now)
-                    ->where('valid_until', '>=', $now);
+            ->where('valid_until', '>=', $now);
     }
 
     public function scopeAvailable($query)
@@ -75,11 +75,12 @@ class PromoCode extends Model
     // Helper methods
     public function isValid()
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return false;
         }
 
         $now = now();
+
         return $this->valid_from <= $now && $this->valid_until >= $now;
     }
 
@@ -90,7 +91,7 @@ class PromoCode extends Model
 
     public function isUsageLimitReached()
     {
-        if (!$this->hasUsageLimit()) {
+        if (! $this->hasUsageLimit()) {
             return false;
         }
 
@@ -133,9 +134,9 @@ class PromoCode extends Model
 
     public function getDiscountTypeLabel()
     {
-        return $this->discount_type === 'percentage' 
-            ? $this->discount_value . '%' 
-            : '$' . number_format($this->discount_value, 2);
+        return $this->discount_type === 'percentage'
+            ? $this->discount_value.'%'
+            : '$'.number_format($this->discount_value, 2);
     }
 
     public function incrementUsage()

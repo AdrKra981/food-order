@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Models\Order;
 use App\Models\CartItem;
-use App\Models\OrderItem;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -40,17 +39,17 @@ class OrderController extends Controller
         $subtotal = 0;
         foreach ($items as $item) {
             $menuItem = \App\Models\MenuItem::findOrFail($item['menu_item_id']);
-            if (!$menuItem->is_available) {
+            if (! $menuItem->is_available) {
                 return response()->json(['message' => 'One or more menu items are unavailable.'], 422);
             }
             $subtotal += $menuItem->price * $item['quantity'];
         }
 
-        if (!empty($data['promo_code'])) {
+        if (! empty($data['promo_code'])) {
             $promo = \App\Models\PromoCode::where('code', $data['promo_code'])
                 ->where('restaurant_id', $restaurantId)
                 ->first();
-            if (!$promo || !$promo->isValid() || $subtotal < $promo->minimum_order_amount || $promo->isUsageLimitReached() || !$promo->canCustomerUse($user->id)) {
+            if (! $promo || ! $promo->isValid() || $subtotal < $promo->minimum_order_amount || $promo->isUsageLimitReached() || ! $promo->canCustomerUse($user->id)) {
                 return response()->json(['message' => 'Invalid or expired promo code.'], 422);
             }
             $discount = $promo->calculateDiscount($subtotal);
@@ -61,7 +60,7 @@ class OrderController extends Controller
         $order = Order::create([
             'user_id' => $user->id,
             'restaurant_id' => $restaurantId,
-            'order_number' => 'ORD' . now()->format('YmdHis') . rand(100,999),
+            'order_number' => 'ORD'.now()->format('YmdHis').rand(100, 999),
             'total_amount' => $subtotal - $discount,
             'status' => \App\Enums\OrderStatus::PENDING,
             'customer_name' => $data['customer_name'],
@@ -85,13 +84,15 @@ class OrderController extends Controller
             ]);
         }
 
-    $order = $order->fresh(['orderItems']);
-    $orderArr = $order->toArray();
-    $orderArr['discount_amount'] = (float) $orderArr['discount_amount'];
-    $orderArr['total_amount'] = (float) $orderArr['total_amount'];
-    $orderArr['subtotal_amount'] = (float) $orderArr['subtotal_amount'];
-    return response()->json($orderArr, 201);
+        $order = $order->fresh(['orderItems']);
+        $orderArr = $order->toArray();
+        $orderArr['discount_amount'] = (float) $orderArr['discount_amount'];
+        $orderArr['total_amount'] = (float) $orderArr['total_amount'];
+        $orderArr['subtotal_amount'] = (float) $orderArr['subtotal_amount'];
+
+        return response()->json($orderArr, 201);
     }
+
     public function index()
     {
         $orders = Order::where('user_id', Auth::id())
@@ -157,11 +158,12 @@ class OrderController extends Controller
 
             return response()->json([
                 'message' => 'Items added to cart successfully!',
-                'redirect' => route('restaurants.show', $order->restaurant_id)
+                'redirect' => route('restaurants.show', $order->restaurant_id),
             ]);
 
         } catch (\Exception $e) {
             DB::rollback();
+
             return response()->json(['message' => 'Failed to reorder items'], 500);
         }
     }

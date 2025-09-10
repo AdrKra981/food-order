@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Stripe\Stripe;
-use Stripe\PaymentIntent;
-use Stripe\Exception\ApiErrorException;
-use App\Models\Order;
+use App\Enums\OrderStatus;
 use App\Models\CartItem;
+use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PromoCode;
 use App\Services\PromoCodeService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Enums\OrderStatus;
+use Stripe\Exception\ApiErrorException;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 
 class PaymentController extends Controller
 {
@@ -64,7 +64,7 @@ class PaymentController extends Controller
             // Apply promo code discount if provided
             if ($request->promo_code_id) {
                 $promoCode = PromoCode::find($request->promo_code_id);
-                
+
                 if ($promoCode && $promoCode->isValid() && $promoCode->canCustomerUse(Auth::id())) {
                     $discountAmount = $this->promoCodeService->calculateCartDiscount($promoCode, $cartItems);
                     $totalAmount = $subtotal - $discountAmount;
@@ -88,7 +88,7 @@ class PaymentController extends Controller
                 'metadata' => [
                     'user_id' => Auth::id(),
                     'session_id' => session()->getId(),
-                    'customer_name' => $request->first_name . ' ' . $request->last_name,
+                    'customer_name' => $request->first_name.' '.$request->last_name,
                     'customer_email' => $request->email,
                     'delivery_type' => $request->delivery_type,
                     'payment_method_type' => $request->payment_method,
@@ -137,7 +137,7 @@ class PaymentController extends Controller
             $paymentData = session('payment_data');
             $storedPaymentIntentId = session('payment_intent_id');
 
-            if (!$paymentData || $storedPaymentIntentId !== $request->payment_intent_id) {
+            if (! $paymentData || $storedPaymentIntentId !== $request->payment_intent_id) {
                 return response()->json(['error' => 'Invalid payment session'], 400);
             }
 
@@ -168,12 +168,12 @@ class PaymentController extends Controller
                         'order_number' => $this->generateOrderNumber(),
                         'status' => OrderStatus::PENDING,
                         'total_amount' => $totalAmount,
-                        'customer_name' => $paymentData['first_name'] . ' ' . $paymentData['last_name'],
+                        'customer_name' => $paymentData['first_name'].' '.$paymentData['last_name'],
                         'customer_email' => $paymentData['email'],
                         'customer_phone' => $paymentData['phone'],
                         'delivery_type' => $paymentData['delivery_type'],
-                        'delivery_address' => $paymentData['delivery_type'] === 'delivery' ? 
-                            $paymentData['street'] . ', ' . $paymentData['city'] . ', ' . $paymentData['postal_code'] : null,
+                        'delivery_address' => $paymentData['delivery_type'] === 'delivery' ?
+                            $paymentData['street'].', '.$paymentData['city'].', '.$paymentData['postal_code'] : null,
                         'payment_method' => 'online',
                         'payment_status' => 'completed',
                         'payment_intent_id' => $request->payment_intent_id,
@@ -211,6 +211,7 @@ class PaymentController extends Controller
 
             } catch (\Exception $e) {
                 DB::rollback();
+
                 return response()->json(['error' => 'Failed to create orders'], 500);
             }
 
@@ -221,6 +222,6 @@ class PaymentController extends Controller
 
     private function generateOrderNumber()
     {
-        return 'FG' . date('Ymd') . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        return 'FG'.date('Ymd').str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
     }
 }

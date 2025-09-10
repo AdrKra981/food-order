@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
-use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -12,26 +11,26 @@ class RestaurantController extends Controller
     public function edit()
     {
         $restaurant = auth()->user()->restaurant;
-        
-        if (!$restaurant) {
+
+        if (! $restaurant) {
             return redirect()->route('owner.dashboard')
                 ->with('error', 'No restaurant found for your account.');
         }
-        
+
         return Inertia::render('Owner/Restaurant/Edit', [
-            'restaurant' => $restaurant
+            'restaurant' => $restaurant,
         ]);
     }
-    
+
     public function update(Request $request)
     {
         $restaurant = auth()->user()->restaurant;
-        
-        if (!$restaurant) {
+
+        if (! $restaurant) {
             return redirect()->route('owner.dashboard')
                 ->with('error', 'No restaurant found for your account.');
         }
-        
+
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -44,10 +43,10 @@ class RestaurantController extends Controller
             'delivery_fee' => 'nullable|numeric|min:0',
             'minimum_order' => 'nullable|numeric|min:0',
         ]);
-        
+
         $restaurant->update($request->only([
             'name',
-            'description', 
+            'description',
             'phone_number',
             'email',
             'address',
@@ -55,9 +54,9 @@ class RestaurantController extends Controller
             'website',
             'cuisine_type',
             'delivery_fee',
-            'minimum_order'
+            'minimum_order',
         ]));
-        
+
         return redirect()->route('owner.restaurant.edit')
             ->with('success', 'Restaurant settings updated successfully!');
     }

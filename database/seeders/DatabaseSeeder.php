@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\Restaurant;
-use App\Models\MenuCategory;
-use App\Models\MenuItem;
 use App\Enums\UserRole;
+use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 

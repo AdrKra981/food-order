@@ -23,7 +23,7 @@ class PromoCodeController extends Controller
         ]);
 
         $userId = auth()->id();
-        
+
         // Validate the promo code
         $validation = $this->promoCodeService->validatePromoCode(
             $request->code,
@@ -31,10 +31,10 @@ class PromoCodeController extends Controller
             $userId
         );
 
-        if (!$validation['valid']) {
+        if (! $validation['valid']) {
             return response()->json([
                 'valid' => false,
-                'message' => $validation['message']
+                'message' => $validation['message'],
             ], 422);
         }
 
@@ -43,10 +43,10 @@ class PromoCodeController extends Controller
         // Calculate discount for current cart
         $discountCalculation = $this->promoCodeService->calculateCartDiscount($promoCode, $userId);
 
-        if (!$discountCalculation['valid']) {
+        if (! $discountCalculation['valid']) {
             return response()->json([
                 'valid' => false,
-                'message' => $discountCalculation['message']
+                'message' => $discountCalculation['message'],
             ], 422);
         }
 
@@ -66,7 +66,7 @@ class PromoCodeController extends Controller
                 'applicable_amount' => $discountCalculation['applicable_amount'],
                 'total_amount' => $discountCalculation['total_amount'],
                 'final_amount' => $discountCalculation['total_amount'] - $discountCalculation['discount'],
-            ]
+            ],
         ]);
     }
 }

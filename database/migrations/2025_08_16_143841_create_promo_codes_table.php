@@ -29,7 +29,7 @@ return new class extends Migration
             $table->datetime('valid_from');
             $table->datetime('valid_until');
             $table->timestamps();
-            
+
             $table->index(['restaurant_id', 'code']);
             $table->index(['valid_from', 'valid_until']);
         });

@@ -15,8 +15,8 @@ class MenuCategoryFactory extends Factory
         return [
             'restaurant_id' => Restaurant::factory(),
             'name' => $this->faker->randomElement([
-                'Appetizers', 'Main Courses', 'Desserts', 'Beverages', 
-                'Salads', 'Soups', 'Pasta', 'Pizza', 'Burgers', 'Seafood'
+                'Appetizers', 'Main Courses', 'Desserts', 'Beverages',
+                'Salads', 'Soups', 'Pasta', 'Pizza', 'Burgers', 'Seafood',
             ]),
             'description' => $this->faker->optional(0.7)->sentence(),
             'sort_order' => $this->faker->numberBetween(1, 10),

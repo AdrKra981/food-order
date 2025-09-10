@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('price', 8, 2); // Price at time of adding to cart
             $table->text('notes')->nullable(); // Special instructions
             $table->timestamps();
-            
+
             // Index for faster queries
             $table->index(['user_id', 'restaurant_id']);
             $table->index(['session_id', 'restaurant_id']);

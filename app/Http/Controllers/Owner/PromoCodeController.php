@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
-use App\Models\PromoCode;
 use App\Models\MenuCategory;
+use App\Models\PromoCode;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,7 +13,7 @@ class PromoCodeController extends Controller
     public function index(Request $request)
     {
         $restaurant = $request->user()->restaurant;
-        
+
         $promoCodes = PromoCode::where('restaurant_id', $restaurant->id)
             ->with('usages')
             ->latest()
@@ -97,7 +97,7 @@ class PromoCodeController extends Controller
         $this->authorize('update', $promoCode);
 
         $validated = $request->validate([
-            'code' => 'required|string|max:50|unique:promo_codes,code,' . $promoCode->id,
+            'code' => 'required|string|max:50|unique:promo_codes,code,'.$promoCode->id,
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'discount_type' => 'required|in:percentage,fixed_amount',

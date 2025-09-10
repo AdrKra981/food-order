@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Media extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'restaurant_id', 'filename', 'original_name', 'mime_type', 'size',
     ];
 
     public function restaurant()
     {
-    return $this->belongsTo(Restaurant::class)->withDefault();
+        return $this->belongsTo(Restaurant::class)->withDefault();
     }
 
     public function menuItems()
@@ -22,4 +23,3 @@ class Media extends Model
         return $this->hasMany(MenuItem::class);
     }
 }
-

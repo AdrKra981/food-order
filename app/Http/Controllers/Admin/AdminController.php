@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Models\MenuItem;
+use App\Models\Order;
 use App\Models\Restaurant;
 use App\Models\User;
-use App\Models\Order;
-use App\Models\MenuItem;
 use Illuminate\Http\Request;
-use App\Enums\UserRole;
 
 class AdminController extends Controller
 {
@@ -40,7 +40,7 @@ class AdminController extends Controller
         return inertia('Admin/Dashboard', [
             'stats' => $stats,
             'recent_restaurants' => $recent_restaurants,
-            'restaurants_by_cuisine' => $restaurants_by_cuisine
+            'restaurants_by_cuisine' => $restaurants_by_cuisine,
         ]);
     }
 
@@ -60,10 +60,10 @@ class AdminController extends Controller
         // Search functionality
         if ($request->has('search') && $request->search) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('cuisine_type', 'like', "%{$search}%")
-                  ->orWhere('city', 'like', "%{$search}%");
+                    ->orWhere('cuisine_type', 'like', "%{$search}%")
+                    ->orWhere('city', 'like', "%{$search}%");
             });
         }
 
@@ -71,25 +71,25 @@ class AdminController extends Controller
 
         return inertia('Admin/Restaurants', [
             'restaurants' => $restaurants,
-            'filters' => $request->only(['status', 'search'])
+            'filters' => $request->only(['status', 'search']),
         ]);
     }
 
     public function toggleRestaurantStatus(Restaurant $restaurant)
     {
         $restaurant->update([
-            'is_accepted' => !$restaurant->is_accepted
+            'is_accepted' => ! $restaurant->is_accepted,
         ]);
 
         $status = $restaurant->is_accepted ? 'activated' : 'deactivated';
-        
+
         return redirect()->back()->with('success', "Restaurant has been {$status} successfully.");
     }
 
     public function deleteRestaurant(Restaurant $restaurant)
     {
         $restaurant->delete();
-        
+
         return redirect()->back()->with('success', 'Restaurant has been deleted successfully.');
     }
 }

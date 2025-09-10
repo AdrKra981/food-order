@@ -12,14 +12,15 @@ class MediaFactory extends Factory
 
     public function definition()
     {
-        $filename = $this->faker->uuid . '.jpg';
+        $filename = $this->faker->uuid.'.jpg';
+
         return [
             'restaurant_id' => Restaurant::factory(),
             'filename' => $filename,
-            'path' => 'media/' . $filename,
+            'path' => 'media/'.$filename,
             'type' => 'image',
             'size' => 123456,
-            'original_name' => $this->faker->word . '.jpg',
+            'original_name' => $this->faker->word.'.jpg',
             'mime_type' => 'image/jpeg',
         ];
     }

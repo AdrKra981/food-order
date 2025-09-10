@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from "react";
+import { createContext, useContext, useReducer, useEffect } from "react";
 
 // Use the configured axios from window to ensure CSRF token is included
 const axios = window.axios;

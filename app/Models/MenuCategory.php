@@ -2,16 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class MenuCategory extends Model
 {
     use HasFactory;
+
     // Priority constants
     const PRIORITY_NORMAL = 0;
+
     const PRIORITY_FEATURED = 1;
+
     const PRIORITY_PROMOTED = 2;
+
     const PRIORITY_SPECIAL = 3;
 
     protected $fillable = [

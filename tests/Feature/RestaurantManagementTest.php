@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use App\Models\Restaurant;
 use App\Enums\UserRole;
+use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -61,7 +61,7 @@ class RestaurantManagementTest extends TestCase
         $response = $this->actingAs($admin)->patch("/restaurants/{$restaurant->id}/approve");
         $response->assertStatus(200);
         $restaurant = Restaurant::find($restaurant->id); // re-fetch from DB
-    $this->assertEquals(1, $restaurant->is_accepted);
+        $this->assertEquals(1, $restaurant->is_accepted);
     }
 
     public function test_owner_can_update_their_restaurant()

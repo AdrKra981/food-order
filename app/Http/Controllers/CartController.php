@@ -7,24 +7,23 @@ use App\Models\MenuItem;
 use App\Services\DeliveryValidationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Inertia\Inertia;
 
 class CartController extends Controller
 {
     public function index()
     {
         $cartItems = $this->getCartItems();
-        
+
         // Group items by restaurant
         $cartByRestaurant = $cartItems->groupBy('restaurant_id')->map(function ($items) {
             $restaurant = $items->first()->restaurant;
             $total = $items->sum('total');
-            
+
             return [
                 'restaurant' => $restaurant,
                 'items' => $items,
                 'total' => $total,
-                'item_count' => $items->sum('quantity')
+                'item_count' => $items->sum('quantity'),
             ];
         });
 
@@ -47,7 +46,7 @@ class CartController extends Controller
         ]);
 
         $menuItem = MenuItem::with('restaurant')->findOrFail($request->menu_item_id);
-        
+
         // Check if item already exists in cart
         $existingItem = CartItem::forUserOrSession(
             Auth::id(),
@@ -82,7 +81,7 @@ class CartController extends Controller
     public function update(Request $request, CartItem $cartItem)
     {
         // Ensure user owns this cart item
-        if (!$this->userOwnsCartItem($cartItem)) {
+        if (! $this->userOwnsCartItem($cartItem)) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -105,7 +104,7 @@ class CartController extends Controller
     public function remove(CartItem $cartItem)
     {
         // Ensure user owns this cart item
-        if (!$this->userOwnsCartItem($cartItem)) {
+        if (! $this->userOwnsCartItem($cartItem)) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
@@ -120,13 +119,13 @@ class CartController extends Controller
     public function clear(Request $request)
     {
         $restaurantId = $request->get('restaurant_id');
-        
+
         $query = CartItem::forUserOrSession(Auth::id(), session()->getId());
-        
+
         if ($restaurantId) {
             $query->where('restaurant_id', $restaurantId);
         }
-        
+
         $query->delete();
 
         return response()->json([
@@ -160,7 +159,7 @@ class CartController extends Controller
         if (Auth::check()) {
             return $cartItem->user_id === Auth::id();
         }
-        
+
         return $cartItem->session_id === session()->getId();
     }
 
@@ -175,25 +174,25 @@ class CartController extends Controller
         ]);
 
         $cartItems = $this->getCartItems();
-        
+
         if ($cartItems->isEmpty()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cart is empty'
+                'message' => 'Cart is empty',
             ], 400);
         }
 
         // Group items by restaurant
         $cartByRestaurant = $cartItems->groupBy('restaurant_id')->map(function ($items) {
             $restaurant = $items->first()->restaurant;
-            
+
             return [
                 'restaurant' => $restaurant,
                 'items' => $items,
             ];
         });
 
-        $deliveryService = new DeliveryValidationService();
+        $deliveryService = new DeliveryValidationService;
         $validation = $deliveryService->validateCartDelivery(
             $cartByRestaurant->toArray(),
             $request->lat,
@@ -202,7 +201,7 @@ class CartController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $validation
+            'data' => $validation,
         ]);
     }
 }

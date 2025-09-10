@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRole;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Enums\UserRole;
 
 class IsOwner
 {
@@ -16,10 +16,10 @@ class IsOwner
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(auth()->user()->role !== UserRole::OWNER) {
+        if (auth()->user()->role !== UserRole::OWNER) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-        
+
         return $next($request);
     }
 }

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Owner;
 
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Carbon\Carbon;
-use App\Models\Order;
-use App\Enums\OrderStatus;
 
 class ReportsController extends Controller
 {
@@ -16,7 +16,7 @@ class ReportsController extends Controller
         $user = auth()->user();
         $restaurant = $user->restaurant;
 
-        if (!$restaurant) {
+        if (! $restaurant) {
             return redirect()->route('owner.restaurant.edit')->with('error', 'Please set up your restaurant first.');
         }
 
@@ -38,7 +38,7 @@ class ReportsController extends Controller
         $totalOrders = $orders->count();
         $totalRevenue = $orders->where('status', '!=', OrderStatus::CANCELLED)->sum('total_amount');
         $avgOrderValue = $totalOrders > 0 ? $totalRevenue / $totalOrders : 0;
-        
+
         // Order status breakdown
         $statusBreakdown = [
             'pending' => $orders->where('status', OrderStatus::PENDING)->count(),
@@ -57,16 +57,16 @@ class ReportsController extends Controller
                 ->where('created_at', '<', $currentDate->copy()->addDay()->startOfDay())
                 ->where('status', '!=', OrderStatus::CANCELLED)
                 ->sum('total_amount');
-            
+
             $revenueByDay[] = [
                 'date' => $currentDate->format('Y-m-d'),
                 'revenue' => $dayRevenue,
                 'orders' => $orders
                     ->where('created_at', '>=', $currentDate->startOfDay())
                     ->where('created_at', '<', $currentDate->copy()->addDay()->startOfDay())
-                    ->count()
+                    ->count(),
             ];
-            
+
             $currentDate->addDay();
         }
 
@@ -83,12 +83,12 @@ class ReportsController extends Controller
         // Calculate growth compared to previous period
         $previousStart = $start->copy()->subDays($end->diffInDays($start) + 1);
         $previousEnd = $start->copy()->subDay();
-        
+
         $previousOrders = $restaurant->orders()
             ->whereBetween('created_at', [$previousStart, $previousEnd])
             ->where('status', '!=', OrderStatus::CANCELLED)
             ->get();
-        
+
         $previousRevenue = $previousOrders->sum('total_amount');
         $revenueGrowth = $previousRevenue > 0 ? (($totalRevenue - $previousRevenue) / $previousRevenue) * 100 : 0;
         $orderGrowth = $previousOrders->count() > 0 ? (($totalOrders - $previousOrders->count()) / $previousOrders->count()) * 100 : 0;

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class MenuItem extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'name',
         'description',
@@ -39,8 +40,9 @@ class MenuItem extends Model
     public function getMediaUrlAttribute()
     {
         if ($this->media) {
-            return asset('storage/media/' . $this->media->filename);
+            return asset('storage/media/'.$this->media->filename);
         }
+
         return $this->image_url; // Fallback to direct image_url if no media
     }
 
@@ -56,13 +58,16 @@ class MenuItem extends Model
 
     // Priority constants
     const PRIORITY_NORMAL = 0;
+
     const PRIORITY_FEATURED = 1;
+
     const PRIORITY_PROMOTED = 2;
+
     const PRIORITY_CHEF_SPECIAL = 3;
 
     public function getPriorityLabelAttribute(): string
     {
-        return match($this->priority) {
+        return match ($this->priority) {
             self::PRIORITY_FEATURED => 'Featured',
             self::PRIORITY_PROMOTED => 'Promoted',
             self::PRIORITY_CHEF_SPECIAL => "Chef's Special",
@@ -72,7 +77,7 @@ class MenuItem extends Model
 
     public function getPriorityColorAttribute(): string
     {
-        return match($this->priority) {
+        return match ($this->priority) {
             self::PRIORITY_FEATURED => 'bg-blue-100 text-blue-800',
             self::PRIORITY_PROMOTED => 'bg-green-100 text-green-800',
             self::PRIORITY_CHEF_SPECIAL => 'bg-purple-100 text-purple-800',

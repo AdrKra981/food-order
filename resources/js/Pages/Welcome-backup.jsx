@@ -1,9 +1,4 @@
-import { Head, Link } from "@inertiajs/react";
 import { useState } from "react";
-import FoodieGoLogo from "@/Components/FoodieGoLogo";
-import LocationIQAutocomplete from "@/Components/LocationIQAutocomplete";
-import CartIcon from "@/Components/CartIcon";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 export default function Welcome({
     auth,

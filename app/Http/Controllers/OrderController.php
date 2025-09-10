@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
+use App\Enums\OrderStatus;
 use App\Models\CartItem;
+use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PromoCode;
 use App\Services\PromoCodeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Enums\OrderStatus;
 
 class OrderController extends Controller
 {
@@ -51,14 +51,14 @@ class OrderController extends Controller
         // Validate and apply promo code if provided
         $appliedPromoCode = null;
         $totalDiscountAmount = 0;
-        
-        if (!empty($validated['promo_code_id'])) {
+
+        if (! empty($validated['promo_code_id'])) {
             $promoCode = PromoCode::find($validated['promo_code_id']);
-            
-            if (!$promoCode || !$promoCode->isValid() || !$promoCode->canCustomerUse(Auth::id())) {
+
+            if (! $promoCode || ! $promoCode->isValid() || ! $promoCode->canCustomerUse(Auth::id())) {
                 return response()->json(['message' => 'Invalid or expired promo code'], 400);
             }
-            
+
             $appliedPromoCode = $promoCode;
         }
 
@@ -79,7 +79,7 @@ class OrderController extends Controller
                 // Apply promo code discount if applicable
                 $discountAmount = 0;
                 $totalAmount = $subtotal;
-                
+
                 if ($appliedPromoCode && $appliedPromoCode->restaurant_id == $restaurantId) {
                     $discountAmount = $this->promoCodeService->calculateCartDiscount($appliedPromoCode, $items);
                     $totalAmount = $subtotal - $discountAmount;
@@ -93,12 +93,12 @@ class OrderController extends Controller
                     'order_number' => $this->generateOrderNumber(),
                     'status' => OrderStatus::PENDING,
                     'total_amount' => $totalAmount,
-                    'customer_name' => $request->first_name . ' ' . $request->last_name,
+                    'customer_name' => $request->first_name.' '.$request->last_name,
                     'customer_email' => $request->email,
                     'customer_phone' => $request->phone,
                     'delivery_type' => $request->delivery_type,
-                    'delivery_address' => $request->delivery_type === 'delivery' ? 
-                        $request->street . ', ' . $request->city . ', ' . $request->postal_code : null,
+                    'delivery_address' => $request->delivery_type === 'delivery' ?
+                        $request->street.', '.$request->city.', '.$request->postal_code : null,
                     'payment_method' => $request->payment_method,
                     'notes' => $request->notes,
                     'promo_code_id' => $appliedPromoCode ? $appliedPromoCode->id : null,
@@ -138,13 +138,14 @@ class OrderController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+
             return response()->json(['message' => 'Failed to place order'], 500);
         }
     }
 
     private function generateOrderNumber()
     {
-        return 'FG' . date('Ymd') . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        return 'FG'.date('Ymd').str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
     }
 
     public function index()
@@ -166,7 +167,7 @@ class OrderController extends Controller
         }
 
         $order->load(['restaurant', 'orderItems.menuItem']);
-        
+
         return response()->json($order);
     }
 }

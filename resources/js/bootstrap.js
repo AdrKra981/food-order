@@ -15,10 +15,7 @@ const setCsrfToken = () => {
     if (token) {
         window.axios.defaults.headers.common["X-CSRF-TOKEN"] = token;
         axios.defaults.headers.common["X-CSRF-TOKEN"] = token;
-        console.log(
-            "CSRF token set successfully:",
-            token.substring(0, 10) + "..."
-        );
+
         return true;
     } else {
         console.error("CSRF token not found in meta tag");

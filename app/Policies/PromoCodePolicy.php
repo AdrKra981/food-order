@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\PromoCode;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class PromoCodePolicy
 {
@@ -21,7 +20,7 @@ class PromoCodePolicy
      */
     public function view(User $user, PromoCode $promoCode): bool
     {
-        return $user->role === \App\Enums\UserRole::OWNER 
+        return $user->role === \App\Enums\UserRole::OWNER
             && $user->restaurant->id === $promoCode->restaurant_id;
     }
 
@@ -38,7 +37,7 @@ class PromoCodePolicy
      */
     public function update(User $user, PromoCode $promoCode): bool
     {
-        return $user->role === \App\Enums\UserRole::OWNER 
+        return $user->role === \App\Enums\UserRole::OWNER
             && $user->restaurant->id === $promoCode->restaurant_id;
     }
 
@@ -47,7 +46,7 @@ class PromoCodePolicy
      */
     public function delete(User $user, PromoCode $promoCode): bool
     {
-        return $user->role === \App\Enums\UserRole::OWNER 
+        return $user->role === \App\Enums\UserRole::OWNER
             && $user->restaurant->id === $promoCode->restaurant_id;
     }
 

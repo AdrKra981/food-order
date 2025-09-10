@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { MapPinIcon } from "@heroicons/react/24/outline";
 
 const LocationIQAutocomplete = ({
@@ -11,7 +11,7 @@ const LocationIQAutocomplete = ({
     disabled = false,
     countryCode = "pl",
     apiKey = "",
-    types = ["address"],
+    // types = ["address"],
 }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);

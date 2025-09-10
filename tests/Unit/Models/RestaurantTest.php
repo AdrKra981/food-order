@@ -34,7 +34,7 @@ class RestaurantTest extends TestCase
         $accepted = Restaurant::reAccepted()->get();
         $this->assertGreaterThanOrEqual(1, $accepted->count());
         foreach ($accepted as $restaurant) {
-            $this->assertTrue((bool)$restaurant->is_accepted);
+            $this->assertTrue((bool) $restaurant->is_accepted);
         }
     }
 }

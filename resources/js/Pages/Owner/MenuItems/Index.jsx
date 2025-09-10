@@ -54,7 +54,7 @@ export default function Index() {
     return (
         <OwnerLayout
             header={
-                <div className="flex items-center justify-between w-full">
+                <div className="flex items-center justify-between w-full gap-4">
                     <div className="flex items-center gap-4">
                         <DocumentTextIcon className="h-6 w-6 text-gray-400 mr-2" />
                         <h2 className="font-semibold text-xl text-gray-800 leading-tight">
@@ -132,7 +132,7 @@ export default function Index() {
                                                         </div>
                                                     )}
                                                 </div>
-                                                <div className="flex space-x-2">
+                                                <div className="flex space-x-2 items-center">
                                                     <button
                                                         onClick={() =>
                                                             toggleAvailability(

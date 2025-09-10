@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use App\Models\Media;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class MediaController extends Controller
@@ -18,7 +18,7 @@ class MediaController extends Controller
     {
         $user = Auth::user();
         $restaurant = \App\Models\Restaurant::where('user_id', $user->id)->first();
-        if (!$restaurant) {
+        if (! $restaurant) {
             if (request()->wantsJson()) {
                 return response()->json(['message' => 'No restaurant found for this user.'], 403);
             }
@@ -28,8 +28,9 @@ class MediaController extends Controller
         if (request()->wantsJson()) {
             return response()->json($media, 200);
         }
+
         return Inertia::render('Owner/MediaLibrary/Index', [
-            'media' => $media
+            'media' => $media,
         ]);
     }
 
@@ -39,11 +40,11 @@ class MediaController extends Controller
     public function create()
     {
         $user = Auth::user();
-        
-        if (!$user->restaurant) {
+
+        if (! $user->restaurant) {
             abort(403, 'No restaurant found for this user.');
         }
-        
+
         return Inertia::render('Owner/MediaLibrary/Create');
     }
 
@@ -54,7 +55,7 @@ class MediaController extends Controller
     {
         $user = Auth::user();
         $restaurant = \App\Models\Restaurant::where('user_id', $user->id)->first();
-        if (!$restaurant) {
+        if (! $restaurant) {
             if ($request->wantsJson()) {
                 return response()->json(['message' => 'No restaurant found for this user.'], 403);
             }
@@ -66,8 +67,8 @@ class MediaController extends Controller
                 'file' => 'required|image|max:10240',
             ]);
             $file = $request->file('file');
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-            $path = 'restaurants/' . $restaurant->id . '/' . $filename;
+            $filename = uniqid().'.'.$file->getClientOriginalExtension();
+            $path = 'restaurants/'.$restaurant->id.'/'.$filename;
             Storage::disk('public')->put($path, file_get_contents($file));
             $media = $restaurant->media()->create([
                 'filename' => $filename,
@@ -77,19 +78,20 @@ class MediaController extends Controller
                 'path' => $path,
                 'type' => 'image',
             ]);
+
             return response()->json($media, 201);
         } else {
             $request->validate([
                 'files.*' => 'required|image|max:10240',
             ]);
             $files = $request->file('files');
-            if (!$files || empty($files)) {
+            if (! $files || empty($files)) {
                 return back()->withErrors(['files' => 'Please select at least one image to upload.']);
             }
             $uploadedFiles = [];
             foreach ($files as $file) {
-                $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-                $path = 'restaurants/' . $restaurant->id . '/' . $filename;
+                $filename = uniqid().'.'.$file->getClientOriginalExtension();
+                $path = 'restaurants/'.$restaurant->id.'/'.$filename;
                 Storage::disk('public')->put($path, file_get_contents($file));
                 $media = $restaurant->media()->create([
                     'filename' => $filename,
@@ -101,7 +103,8 @@ class MediaController extends Controller
                 ]);
                 $uploadedFiles[] = $media;
             }
-            return redirect()->route('owner.media.index')->with('success', count($uploadedFiles) . ' image(s) uploaded successfully!');
+
+            return redirect()->route('owner.media.index')->with('success', count($uploadedFiles).' image(s) uploaded successfully!');
         }
     }
 
@@ -136,20 +139,21 @@ class MediaController extends Controller
     {
         $user = Auth::user();
         $restaurant = \App\Models\Restaurant::find($media->restaurant_id);
-        if (!$restaurant || $restaurant->user_id !== $user->id) {
+        if (! $restaurant || $restaurant->user_id !== $user->id) {
             if (request()->wantsJson()) {
                 return response()->json(['message' => 'You can only delete media from your own restaurant.'], 403);
             }
             abort(403, 'You can only delete media from your own restaurant.');
         }
         // Delete the media file from storage
-        $filePath = 'restaurants/' . $media->restaurant_id . '/' . $media->filename;
+        $filePath = 'restaurants/'.$media->restaurant_id.'/'.$media->filename;
         Storage::disk('public')->delete($filePath);
         // Delete the database record
         $media->delete();
         if (request()->wantsJson()) {
             return response()->json(['success' => true], 200);
         }
+
         return redirect()->back()->with('success', 'Media deleted successfully.');
     }
 
@@ -159,8 +163,8 @@ class MediaController extends Controller
     public function bulkDestroy(Request $request)
     {
         $user = Auth::user();
-        
-        if (!$user->restaurant) {
+
+        if (! $user->restaurant) {
             abort(403, 'No restaurant found for this user.');
         }
 
@@ -176,7 +180,7 @@ class MediaController extends Controller
         $deletedCount = 0;
         foreach ($mediaItems as $media) {
             // Delete the media file from storage
-            $filePath = 'restaurants/' . $media->restaurant_id . '/' . $media->filename;
+            $filePath = 'restaurants/'.$media->restaurant_id.'/'.$media->filename;
             Storage::disk('public')->delete($filePath);
 
             // Delete the database record
@@ -184,7 +188,7 @@ class MediaController extends Controller
             $deletedCount++;
         }
 
-        return redirect()->back()->with('success', $deletedCount . ' media file(s) deleted successfully.');
+        return redirect()->back()->with('success', $deletedCount.' media file(s) deleted successfully.');
     }
 
     /**
@@ -193,13 +197,13 @@ class MediaController extends Controller
     public function api()
     {
         $user = Auth::user();
-        
-        if (!$user->restaurant) {
+
+        if (! $user->restaurant) {
             return response()->json(['error' => 'No restaurant found'], 403);
         }
-        
+
         $media = $user->restaurant->media()->latest()->get();
-        
+
         return response()->json($media);
     }
 }

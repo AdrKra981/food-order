@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\Order;
-use App\Models\User;
-use App\Models\Restaurant;
-use App\Models\PromoCode;
 use App\Enums\OrderStatus;
+use App\Models\Order;
+use App\Models\PromoCode;
+use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderFactory extends Factory
@@ -22,7 +22,7 @@ class OrderFactory extends Factory
         return [
             'user_id' => User::factory(),
             'restaurant_id' => Restaurant::factory(),
-            'order_number' => 'FG' . date('Ymd') . str_pad($this->faker->numberBetween(1, 9999), 4, '0', STR_PAD_LEFT),
+            'order_number' => 'FG'.date('Ymd').str_pad($this->faker->numberBetween(1, 9999), 4, '0', STR_PAD_LEFT),
             'total_amount' => $totalAmount,
             'subtotal_amount' => $subtotal,
             'discount_amount' => $discountAmount ?? 0,
@@ -126,7 +126,7 @@ class OrderFactory extends Factory
             $promoCode = PromoCode::factory()->create();
             $subtotal = $this->faker->randomFloat(2, 30, 100);
             $discountAmount = min($subtotal * 0.2, 15); // 20% discount, max $15
-            
+
             return [
                 'promo_code_id' => $promoCode->id,
                 'promo_code_used' => $promoCode->code,
@@ -166,7 +166,7 @@ class OrderFactory extends Factory
             return [
                 'payment_method' => 'card',
                 'payment_status' => 'completed',
-                'payment_intent_id' => 'pi_' . $this->faker->regexify('[A-Za-z0-9]{24}'),
+                'payment_intent_id' => 'pi_'.$this->faker->regexify('[A-Za-z0-9]{24}'),
             ];
         });
     }

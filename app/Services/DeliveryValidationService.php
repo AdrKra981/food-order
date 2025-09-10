@@ -9,10 +9,10 @@ class DeliveryValidationService
     /**
      * Calculate the distance between two coordinates using the Haversine formula
      *
-     * @param float $lat1 Restaurant latitude
-     * @param float $lon1 Restaurant longitude
-     * @param float $lat2 Delivery address latitude
-     * @param float $lon2 Delivery address longitude
+     * @param  float  $lat1  Restaurant latitude
+     * @param  float  $lon1  Restaurant longitude
+     * @param  float  $lat2  Delivery address latitude
+     * @param  float  $lon2  Delivery address longitude
      * @return float Distance in kilometers
      */
     public function calculateDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
@@ -22,19 +22,14 @@ class DeliveryValidationService
         $dLat = deg2rad($lat2 - $lat1);
         $dLon = deg2rad($lon2 - $lon1);
 
-        $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon/2) * sin($dLon/2);
-        $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+        $a = sin($dLat / 2) * sin($dLat / 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) * sin($dLon / 2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
         return $earthRadius * $c;
     }
 
     /**
      * Check if delivery is possible to the given address
-     *
-     * @param Restaurant $restaurant
-     * @param float $deliveryLat
-     * @param float $deliveryLng
-     * @return array
      */
     public function validateDelivery(Restaurant $restaurant, float $deliveryLat, float $deliveryLng): array
     {
@@ -58,11 +53,6 @@ class DeliveryValidationService
 
     /**
      * Validate delivery for multiple restaurants in cart
-     *
-     * @param array $cartByRestaurant
-     * @param float $deliveryLat
-     * @param float $deliveryLng
-     * @return array
      */
     public function validateCartDelivery(array $cartByRestaurant, float $deliveryLat, float $deliveryLng): array
     {
@@ -71,10 +61,10 @@ class DeliveryValidationService
 
         foreach ($cartByRestaurant as $restaurantCart) {
             $restaurant = $restaurantCart['restaurant'];
-            
+
             $validation = $this->validateDelivery($restaurant, $deliveryLat, $deliveryLng);
-            
-            if (!$validation['delivery_possible']) {
+
+            if (! $validation['delivery_possible']) {
                 $allDeliverable = false;
             }
 

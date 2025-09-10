@@ -2,14 +2,13 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
+use App\Models\Order;
 use App\Models\PromoCode;
+use App\Models\PromoCodeUsage;
 use App\Models\Restaurant;
 use App\Models\User;
-use App\Models\Order;
-use App\Models\PromoCodeUsage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Carbon\Carbon;
+use Tests\TestCase;
 
 class PromoCodeTest extends TestCase
 {
@@ -18,7 +17,7 @@ class PromoCodeTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create a test restaurant
         $this->restaurant = Restaurant::factory()->create();
     }

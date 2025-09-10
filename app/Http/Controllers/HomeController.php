@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Restaurant;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class HomeController extends Controller
@@ -40,7 +40,7 @@ class HomeController extends Controller
                     'opening_hours' => $restaurant->opening_hours ? $restaurant->opening_hours->format('H:i') : null,
                     'closing_hours' => $restaurant->closing_hours ? $restaurant->closing_hours->format('H:i') : null,
                     'owner_name' => $restaurant->user->name,
-                    'image' => $restaurant->media->first() ? '/storage/restaurants/' . $restaurant->id . '/' . $restaurant->media->first()->filename : null,
+                    'image' => $restaurant->media->first() ? '/storage/restaurants/'.$restaurant->id.'/'.$restaurant->media->first()->filename : null,
                 ];
             });
 
@@ -57,7 +57,7 @@ class HomeController extends Controller
 
     public function show(Restaurant $restaurant)
     {
-        if (!$restaurant->is_accepted) {
+        if (! $restaurant->is_accepted) {
             abort(404);
         }
 
@@ -77,7 +77,7 @@ class HomeController extends Controller
                 'opening_hours' => $restaurant->opening_hours ? $restaurant->opening_hours->format('H:i') : null,
                 'closing_hours' => $restaurant->closing_hours ? $restaurant->closing_hours->format('H:i') : null,
                 'owner_name' => $restaurant->user->name,
-                'image' => $restaurant->media->first() ? '/storage/restaurants/' . $restaurant->id . '/' . $restaurant->media->first()->filename : null,
+                'image' => $restaurant->media->first() ? '/storage/restaurants/'.$restaurant->id.'/'.$restaurant->media->first()->filename : null,
                 'menuCategories' => $restaurant->menuCategories->map(function ($category) use ($restaurant) {
                     return [
                         'id' => $category->id,
@@ -89,7 +89,7 @@ class HomeController extends Controller
                                 'name' => $item->name,
                                 'description' => $item->description,
                                 'price' => $item->price,
-                                'image' => $item->media ? '/storage/restaurants/' . $restaurant->id . '/' . $item->media->filename : null,
+                                'image' => $item->media ? '/storage/restaurants/'.$restaurant->id.'/'.$item->media->filename : null,
                             ];
                         }),
                     ];

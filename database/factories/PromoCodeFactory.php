@@ -15,7 +15,7 @@ class PromoCodeFactory extends Factory
         return [
             'restaurant_id' => Restaurant::factory(),
             'code' => strtoupper($this->faker->unique()->lexify('???###')),
-            'name' => $this->faker->words(2, true) . ' Discount',
+            'name' => $this->faker->words(2, true).' Discount',
             'description' => $this->faker->sentence(),
             'discount_type' => $this->faker->randomElement(['percentage', 'fixed_amount']),
             'discount_value' => $this->faker->randomFloat(2, 5, 50),

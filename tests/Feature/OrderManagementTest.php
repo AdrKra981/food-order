@@ -2,16 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Order;
-use App\Models\User;
-use App\Models\Restaurant;
-use App\Models\MenuItem;
 use App\Models\MenuCategory;
-use App\Models\OrderItem;
+use App\Models\MenuItem;
+use App\Models\Order;
+use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-
-
 
 class OrderManagementTest extends TestCase
 {
@@ -44,7 +41,7 @@ class OrderManagementTest extends TestCase
         ]);
 
         $this->actingAs($user);
-    $response = $this->getJson(route('customer.orders.show', ['order' => $order->id]));
+        $response = $this->getJson(route('customer.orders.show', ['order' => $order->id]));
         $response->assertStatus(200);
         $response->assertJsonFragment([
             'id' => $order->id,
@@ -74,7 +71,7 @@ class OrderManagementTest extends TestCase
                 'status' => \App\Enums\OrderStatus::PENDING,
             ]);
             $response = $this->patchJson(route('owner.orders.update-status', ['order' => $order->id]), [
-                'status' => $statusString
+                'status' => $statusString,
             ]);
             $response->assertStatus(200);
             $order->refresh();

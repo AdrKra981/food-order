@@ -2,10 +2,10 @@
 
 namespace Tests\Unit\Models;
 
-use Tests\TestCase;
 use App\Models\PromoCode;
 use App\Models\Restaurant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class SimplePromoCodeTest extends TestCase
 {
@@ -15,7 +15,7 @@ class SimplePromoCodeTest extends TestCase
     public function test_simple_promo_code_creation()
     {
         $user = \App\Models\User::factory()->create();
-        
+
         $restaurant = Restaurant::create([
             'user_id' => $user->id,
             'name' => 'Test Restaurant',
@@ -35,7 +35,7 @@ class SimplePromoCodeTest extends TestCase
             'is_accepted' => true,
         ]);
 
-        $promoCode = new PromoCode();
+        $promoCode = new PromoCode;
         $promoCode->restaurant_id = $restaurant->id;
         $promoCode->code = 'TEST10';
         $promoCode->name = 'Test Discount';

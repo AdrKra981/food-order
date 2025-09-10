@@ -14,7 +14,7 @@ class ProfileUpdateTest extends TestCase
     public function test_user_can_update_profile_name_and_email()
     {
         $user = User::factory()->create();
-    $this->actingAs($user)->patch('/profile', [
+        $this->actingAs($user)->patch('/profile', [
             'name' => 'New Name',
             'email' => 'newemail@example.com',
         ]);
@@ -28,7 +28,7 @@ class ProfileUpdateTest extends TestCase
         $user = User::factory()->create([
             'password' => Hash::make('oldpassword'),
         ]);
-    $this->actingAs($user)->put('/password', [
+        $this->actingAs($user)->put('/password', [
             'current_password' => 'oldpassword',
             'password' => 'newpassword',
             'password_confirmation' => 'newpassword',

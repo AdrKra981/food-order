@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Response;
 
 class RestaurantController extends Controller
 {
@@ -34,6 +33,7 @@ class RestaurantController extends Controller
             'delivery_range_km' => $request->input('delivery_range_km', 10),
             'is_accepted' => false,
         ]));
+
         return response()->json($restaurant, 201);
     }
 
@@ -43,6 +43,7 @@ class RestaurantController extends Controller
         $restaurant->is_accepted = true;
         $restaurant->save();
         $restaurant->refresh();
+
         return response()->json($restaurant, 200);
     }
 
@@ -53,6 +54,7 @@ class RestaurantController extends Controller
             return response()->json(['message' => 'Forbidden'], 403);
         }
         $restaurant->update($request->only(['name', 'address', 'description', 'cuisine_type']));
+
         return response()->json($restaurant, 200);
     }
 
@@ -63,6 +65,7 @@ class RestaurantController extends Controller
             return response()->json(['message' => 'Forbidden'], 403);
         }
         $restaurant->delete();
+
         return response()->json(['message' => 'Deleted'], 200);
     }
 }

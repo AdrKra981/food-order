@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\User;
-use App\Models\Restaurant;
 use App\Enums\UserRole;
+use App\Models\Restaurant;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class RestaurantSeeder extends Seeder
 {
@@ -41,7 +40,7 @@ class RestaurantSeeder extends Seeder
                     'opening_hours' => '11:00',
                     'closing_hours' => '23:00',
                     'is_accepted' => true,
-                ]
+                ],
             ],
             [
                 'owner' => [
@@ -67,7 +66,7 @@ class RestaurantSeeder extends Seeder
                     'opening_hours' => '17:00',
                     'closing_hours' => '22:30',
                     'is_accepted' => true,
-                ]
+                ],
             ],
             [
                 'owner' => [
@@ -93,7 +92,7 @@ class RestaurantSeeder extends Seeder
                     'opening_hours' => '10:00',
                     'closing_hours' => '24:00',
                     'is_accepted' => true,
-                ]
+                ],
             ],
             [
                 'owner' => [
@@ -119,7 +118,7 @@ class RestaurantSeeder extends Seeder
                     'opening_hours' => '16:00',
                     'closing_hours' => '22:00',
                     'is_accepted' => true,
-                ]
+                ],
             ],
             [
                 'owner' => [
@@ -145,7 +144,7 @@ class RestaurantSeeder extends Seeder
                     'opening_hours' => '09:00',
                     'closing_hours' => '23:30',
                     'is_accepted' => true,
-                ]
+                ],
             ],
             [
                 'owner' => [
@@ -171,18 +170,18 @@ class RestaurantSeeder extends Seeder
                     'opening_hours' => '07:00',
                     'closing_hours' => '21:00',
                     'is_accepted' => true,
-                ]
-            ]
+                ],
+            ],
         ];
 
         foreach ($restaurants as $data) {
             // Create the user first
             $user = User::create($data['owner']);
-            
+
             // Then create the restaurant and associate it with the user
             $restaurantData = $data['restaurant'];
             $restaurantData['user_id'] = $user->id;
-            
+
             Restaurant::create($restaurantData);
         }
     }
