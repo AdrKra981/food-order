@@ -47,10 +47,10 @@ export default [
             "no-unused-vars": [
                 "warn",
                 {
-                    "varsIgnorePattern": "^React$",
-                    "args": "after-used",
-                    "ignoreRestSiblings": true
-                }
+                    varsIgnorePattern: "^React$",
+                    args: "after-used",
+                    ignoreRestSiblings: true,
+                },
             ],
             // Mark variables used in JSX as used to avoid false positives
             "react/jsx-uses-vars": "error",

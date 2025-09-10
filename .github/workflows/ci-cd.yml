@@ -34,7 +34,7 @@ jobs:
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Install NPM dependencies
-        run: npm install
+        run: npm install --no-optional
 
       - name: PHP Lint (Pint)
         run: ./vendor/bin/pint --test
