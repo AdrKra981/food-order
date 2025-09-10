@@ -5,7 +5,6 @@ import OwnerLayout from "../../../Layouts/OwnerLayout";
 import {
     CloudArrowUpIcon,
     XMarkIcon,
-    PhotoIcon,
     ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
 

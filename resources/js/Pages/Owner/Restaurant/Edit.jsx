@@ -5,7 +5,6 @@ import {
     MapPinIcon,
     PhoneIcon,
     ClockIcon,
-    PhotoIcon,
     ChevronDownIcon,
 } from "@heroicons/react/24/outline";
 

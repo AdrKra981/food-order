@@ -5,11 +5,8 @@ import {
     BuildingStorefrontIcon,
     ChartBarIcon,
     DocumentTextIcon,
-    ClipboardDocumentListIcon,
-    ShieldCheckIcon,
     ExclamationTriangleIcon,
     UsersIcon,
-    CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 
 export default function AdminDashboard({

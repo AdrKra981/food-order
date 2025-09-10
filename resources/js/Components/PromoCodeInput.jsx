@@ -46,7 +46,9 @@ export default function PromoCodeInput({
                 setError(data.message || "Invalid promo code");
             }
         } catch (error) {
-            setError("Failed to validate promo code. Please try again.");
+            setError(
+                `Failed to validate promo code. Please try again. ${error.message}`
+            );
         } finally {
             setIsValidating(false);
         }

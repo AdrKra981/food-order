@@ -16,7 +16,6 @@ import { useState } from "react";
 
 export default function Reports() {
     const {
-        restaurant,
         filters,
         stats,
         statusBreakdown,

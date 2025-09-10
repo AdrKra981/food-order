@@ -59,7 +59,7 @@ const CheckoutForm = ({
                     onError(data.error || "Failed to initialize payment");
                 }
             } catch (error) {
-                onError("Payment initialization failed");
+                onError(`Payment initialization failed! ${error.message}`);
             }
         };
 
@@ -142,7 +142,7 @@ const CheckoutForm = ({
                     onError(data.error || "Payment confirmation failed");
                 }
             } catch (error) {
-                onError("Order creation failed");
+                onError(`Order creation failed! ${error.message}`);
             } finally {
                 setIsProcessing(false);
             }

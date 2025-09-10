@@ -1,6 +1,5 @@
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
-import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { FullPageLoader } from "@/Components/LoadingSpinner";
 import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
@@ -10,7 +9,6 @@ import {
     DocumentTextIcon,
     ClipboardDocumentListIcon,
     PhotoIcon,
-    Cog6ToothIcon,
     ChartBarIcon,
     Bars3Icon,
     XMarkIcon,

@@ -101,6 +101,7 @@ export default function Index() {
                 }
             );
         } catch (error) {
+            console.error("Error deleting category:", error);
             setIsDeleting(false);
         }
     };

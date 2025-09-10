@@ -144,7 +144,6 @@ class MenuItemController extends Controller
             abort(403, 'You can only update menu items from your own restaurant.');
         }
 
-
         $rules = [
             'name' => 'sometimes|required|string',
             'description' => 'sometimes|nullable|string',
@@ -156,7 +155,6 @@ class MenuItemController extends Controller
         ];
         $validated = $request->validate($rules);
 
-
         // Verify that the media belongs to the restaurant if provided
         if (array_key_exists('media_id', $validated) && $validated['media_id']) {
             $media = \App\Models\Media::find($validated['media_id']);
@@ -164,11 +162,12 @@ class MenuItemController extends Controller
                 if ($request->wantsJson()) {
                     return response()->json(['message' => 'Selected image does not belong to your restaurant.'], 403);
                 }
+
                 return back()->withErrors(['media_id' => 'Selected image does not belong to your restaurant.']);
             }
         }
 
-    $menuItem->update($validated);
+        $menuItem->update($validated);
         if ($request->wantsJson()) {
             return response()->json($menuItem, 200);
         }

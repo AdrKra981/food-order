@@ -6,6 +6,7 @@ import babelParser from "@babel/eslint-parser";
 
 export default [
     js.configs.recommended,
+    // don't spread plugin configs directly (flat config requires plugin objects)
     {
         files: ["**/*.js", "**/*.jsx"],
         languageOptions: {
@@ -42,8 +43,23 @@ export default [
             react,
         },
         rules: {
-            "no-unused-vars": "warn",
+            // Ignore the React identifier when using the new JSX transform
+            "no-unused-vars": [
+                "warn",
+                {
+                    "varsIgnorePattern": "^React$",
+                    "args": "after-used",
+                    "ignoreRestSiblings": true
+                }
+            ],
+            // Mark variables used in JSX as used to avoid false positives
+            "react/jsx-uses-vars": "error",
             "react/prop-types": "off",
+        },
+        settings: {
+            react: {
+                version: "detect",
+            },
         },
     },
 ];

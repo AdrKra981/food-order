@@ -8,8 +8,6 @@ import {
     EnvelopeIcon,
     UserIcon,
     CheckCircleIcon,
-    XCircleIcon,
-    ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { useCart } from "@/Contexts/CartContext";
 import Navbar from "@/Components/Navbar";
@@ -69,7 +67,7 @@ const Checkout = ({ stripePublicKey }) => {
         });
     };
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         // Customer Information
         first_name: "",
         last_name: "",
@@ -213,7 +211,7 @@ const Checkout = ({ stripePublicKey }) => {
 
         // Handle cash/card on delivery/pickup payments
         post("/checkout", {
-            onSuccess: (page) => {
+            onSuccess: () => {
                 clearCart();
                 router.visit("/orders/success");
             },

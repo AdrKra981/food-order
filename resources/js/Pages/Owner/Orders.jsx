@@ -4,10 +4,6 @@ import {
     ClipboardDocumentListIcon,
     ChartBarIcon,
     MagnifyingGlassIcon,
-    EyeIcon,
-    PencilIcon,
-    CheckIcon,
-    XMarkIcon,
     HomeIcon,
     ChevronDownIcon,
     ChevronUpIcon,
@@ -15,7 +11,7 @@ import {
 import { useState } from "react";
 
 export default function Orders() {
-    const { restaurant, orders, filters, statusCounts } = usePage().props;
+    const { orders, filters, statusCounts } = usePage().props;
 
     const [search, setSearch] = useState(filters.search || "");
     const [activeTab, setActiveTab] = useState("orders");

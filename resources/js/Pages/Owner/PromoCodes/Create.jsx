@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Head, useForm } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import InputError from "@/Components/InputError";

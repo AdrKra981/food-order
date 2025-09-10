@@ -1,15 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { router, usePage } from "@inertiajs/react";
-import {
-    ShoppingCartIcon,
-    UserIcon,
-    ChevronDownIcon,
-} from "@heroicons/react/24/outline";
-import { useCart } from "@/Contexts/CartContext";
+import { UserIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import FoodieGoLogo from "./FoodieGoLogo";
 
 export default function Navbar() {
-    const { cartItems, totalItems } = useCart();
     const { auth } = usePage().props;
     const [showUserMenu, setShowUserMenu] = useState(false);
     const dropdownRef = useRef(null);

@@ -1,4 +1,3 @@
-import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { FullPageLoader } from "@/Components/LoadingSpinner";

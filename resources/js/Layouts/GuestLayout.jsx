@@ -1,4 +1,3 @@
-import ApplicationLogo from "@/Components/ApplicationLogo";
 import FoodieGoLogo from "@/Components/FoodieGoLogo";
 import { Link } from "@inertiajs/react";
 
