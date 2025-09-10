@@ -33,8 +33,14 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
-      - name: Install NPM dependencies
-        run: npm install --omit=optional
+      - name: Clean npm artifacts
+        run: |
+          rm -rf node_modules package-lock.json || true
+          npm cache clean --force || true
+
+      - name: Install NPM dependencies (include optional native binaries)
+        run: |
+          npm install
 
       - name: PHP Lint (Pint)
         run: ./vendor/bin/pint --test
