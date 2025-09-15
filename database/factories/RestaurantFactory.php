@@ -14,7 +14,7 @@ class RestaurantFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'name' => $this->faker->company() . ' Restaurant',
+            'name' => $this->faker->company().' Restaurant',
             'description' => $this->faker->paragraph(),
             'cuisine_type' => $this->faker->randomElement(['Italian', 'Chinese', 'Mexican', 'Indian', 'American', 'Japanese', 'Thai', 'French']),
             'phone_number' => $this->faker->phoneNumber(),

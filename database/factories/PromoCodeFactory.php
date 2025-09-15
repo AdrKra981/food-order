@@ -20,7 +20,7 @@ class PromoCodeFactory extends Factory
             // high-entropy codes per process. If your DB has a uniqueness constraint and
             // collisions still occur, we can fall back to checking existence in the DB.
             'code' => Str::upper(Str::random(8)),
-            'name' => $this->faker->words(2, true) . ' Discount',
+            'name' => $this->faker->words(2, true).' Discount',
             'description' => $this->faker->sentence(),
             'discount_type' => $this->faker->randomElement(['percentage', 'fixed_amount']),
             'discount_value' => $this->faker->randomFloat(2, 5, 50),
