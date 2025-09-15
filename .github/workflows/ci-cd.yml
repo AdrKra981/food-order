@@ -62,6 +62,20 @@ jobs:
       - name: Generate Laravel key
         run: php artisan key:generate
 
+      - name: Create .env.testing for CI
+        run: |
+          # Start from example then make test-friendly overrides
+          cp .env.example .env.testing || true
+          php -r "file_put_contents('.env.testing', str_replace('APP_ENV=local','APP_ENV=testing',file_get_contents('.env.testing')));"
+          php -r "file_put_contents('.env.testing', str_replace('DB_CONNECTION=mysql','DB_CONNECTION=sqlite',file_get_contents('.env.testing')));"
+          php -r "file_put_contents('.env.testing', str_replace('DB_DATABASE=laravel','DB_DATABASE=:memory:',file_get_contents('.env.testing')));"
+          php -r "file_put_contents('.env.testing', str_replace('SESSION_DRIVER=database','SESSION_DRIVER=array',file_get_contents('.env.testing')));"
+          echo "QUEUE_CONNECTION=sync" >> .env.testing
+          echo "MAIL_MAILER=array" >> .env.testing
+          echo "CACHE_STORE=array" >> .env.testing
+          # Ensure a valid APP_KEY for encryption during tests
+          echo "APP_KEY=$(php artisan key:generate --show)" >> .env.testing
+
       - name: Run migrations
         run: php artisan migrate --env=testing
 
