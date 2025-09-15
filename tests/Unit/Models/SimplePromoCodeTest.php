@@ -11,7 +11,7 @@ class SimplePromoCodeTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function test_simple_promo_code_creation()
     {
         $user = \App\Models\User::factory()->create();

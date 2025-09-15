@@ -17,7 +17,7 @@ class OrderManagementTest extends TestCase
     public function test_owner_cannot_update_status_of_other_restaurant_order()
     {
         $owner = User::factory()->create(['role' => \App\Enums\UserRole::OWNER]);
-        $ownerRestaurant = Restaurant::factory()->create(['user_id' => $owner->id]);
+        $ownerRestaurant = Restaurant::factory()->create(['user_id' => $owner->id, 'is_accepted' => true]);
         $otherRestaurant = Restaurant::factory()->create();
         $order = Order::factory()->create([
             'restaurant_id' => $otherRestaurant->id,

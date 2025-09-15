@@ -22,7 +22,7 @@ class PromoCodeTest extends TestCase
         $this->restaurant = Restaurant::factory()->create();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_create_a_promo_code()
     {
         $promoCode = PromoCode::create([
@@ -46,7 +46,7 @@ class PromoCodeTest extends TestCase
         $this->assertTrue($promoCode->exists);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_check_if_promo_code_is_valid_by_date()
     {
         // Valid promo code
@@ -78,7 +78,7 @@ class PromoCodeTest extends TestCase
         $this->assertFalse($futurePromoCode->isValid());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_check_if_promo_code_is_active()
     {
         $activePromoCode = PromoCode::factory()->create([
@@ -99,7 +99,7 @@ class PromoCodeTest extends TestCase
         $this->assertFalse($inactivePromoCode->isValid());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_calculate_percentage_discount()
     {
         $promoCode = PromoCode::factory()->create([
@@ -115,7 +115,7 @@ class PromoCodeTest extends TestCase
         $this->assertEquals(20.00, $discount);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_calculate_fixed_amount_discount()
     {
         $promoCode = PromoCode::factory()->create([
@@ -131,7 +131,7 @@ class PromoCodeTest extends TestCase
         $this->assertEquals(15.00, $discount);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_respects_maximum_discount_amount_for_percentage()
     {
         $promoCode = PromoCode::factory()->create([
@@ -147,7 +147,7 @@ class PromoCodeTest extends TestCase
         $this->assertEquals(10.00, $discount);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_never_exceeds_order_total()
     {
         $promoCode = PromoCode::factory()->create([
@@ -163,7 +163,7 @@ class PromoCodeTest extends TestCase
         $this->assertEquals(100.00, $discount); // Should be limited to order total
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_check_total_usage_limit()
     {
         $promoCode = PromoCode::factory()->create([
@@ -184,7 +184,7 @@ class PromoCodeTest extends TestCase
         $this->assertTrue($promoCode->isUsageLimitReached());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_check_customer_usage_limit()
     {
         $user = User::factory()->create();
@@ -222,7 +222,7 @@ class PromoCodeTest extends TestCase
         $this->assertEquals(2, $promoCode->getCustomerUsageCount($user->id));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_allows_unlimited_customer_usage_when_limit_is_null()
     {
         $user = User::factory()->create();
@@ -246,7 +246,7 @@ class PromoCodeTest extends TestCase
         $this->assertEquals(10, $promoCode->getCustomerUsageCount($user->id));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_increment_usage_count()
     {
         $promoCode = PromoCode::factory()->create([
@@ -263,7 +263,7 @@ class PromoCodeTest extends TestCase
         $this->assertEquals(2, $promoCode->fresh()->used_count);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_get_discount_type_label()
     {
         $percentagePromo = PromoCode::factory()->create([
@@ -282,7 +282,7 @@ class PromoCodeTest extends TestCase
         $this->assertEquals('$15.00', $fixedPromo->getDiscountTypeLabel());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_use_scopes_for_filtering()
     {
         // Create various promo codes
@@ -318,7 +318,7 @@ class PromoCodeTest extends TestCase
         $this->assertTrue($availableCodes->contains($activeValidPromo));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_calculates_discount_with_applicable_amount()
     {
         $promoCode = PromoCode::factory()->create([

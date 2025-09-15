@@ -17,7 +17,7 @@ class MenuManagementTest extends TestCase
     public function test_owner_can_create_menu_category()
     {
         $owner = User::factory()->create(['role' => UserRole::OWNER]);
-        $restaurant = Restaurant::factory()->create(['user_id' => $owner->id]);
+        $restaurant = Restaurant::factory()->create(['user_id' => $owner->id, 'is_accepted' => true]);
         $response = $this->actingAs($owner)->json('POST', '/owner/menu-categories', [
             'name' => 'Starters',
             'description' => 'Appetizers',
@@ -33,7 +33,7 @@ class MenuManagementTest extends TestCase
     public function test_owner_can_update_menu_category()
     {
         $owner = User::factory()->create(['role' => UserRole::OWNER]);
-        $restaurant = Restaurant::factory()->create(['user_id' => $owner->id]);
+        $restaurant = Restaurant::factory()->create(['user_id' => $owner->id, 'is_accepted' => true]);
         $category = MenuCategory::factory()->create(['restaurant_id' => $restaurant->id]);
         $response = $this->actingAs($owner)->json('PUT', "/owner/menu-categories/{$category->id}", [
             'name' => 'Updated Category',

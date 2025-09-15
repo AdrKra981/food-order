@@ -24,7 +24,7 @@ class OrderTest extends TestCase
         $this->restaurant = Restaurant::factory()->create();
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_create_an_order()
     {
         $order = Order::create([
@@ -47,7 +47,7 @@ class OrderTest extends TestCase
         $this->assertEquals(OrderStatus::PENDING, $order->status);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_belongs_to_a_user()
     {
         $order = Order::factory()->create([
@@ -59,7 +59,7 @@ class OrderTest extends TestCase
         $this->assertEquals($this->user->id, $order->user->id);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_belongs_to_a_restaurant()
     {
         $order = Order::factory()->create([
@@ -71,7 +71,7 @@ class OrderTest extends TestCase
         $this->assertEquals($this->restaurant->id, $order->restaurant->id);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_have_multiple_order_items()
     {
         $order = Order::factory()->create([
@@ -101,7 +101,7 @@ class OrderTest extends TestCase
         $this->assertTrue($order->orderItems->contains($orderItem2));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_belong_to_a_promo_code()
     {
         $promoCode = PromoCode::factory()->create([
@@ -120,7 +120,7 @@ class OrderTest extends TestCase
         $this->assertEquals(5.00, $order->discount_amount);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_casts_status_to_enum()
     {
         $order = Order::factory()->create([
@@ -133,7 +133,7 @@ class OrderTest extends TestCase
         $this->assertEquals(OrderStatus::PENDING, $order->status);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_casts_monetary_values_to_decimal()
     {
         $order = Order::factory()->create([
@@ -149,7 +149,7 @@ class OrderTest extends TestCase
         $this->assertEquals('30.50', $order->subtotal_amount);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_calculate_order_totals_with_items()
     {
         $order = Order::factory()->create([
@@ -186,7 +186,7 @@ class OrderTest extends TestCase
         $this->assertEquals(33.00, $calculatedTotal);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_have_different_delivery_types()
     {
         $deliveryOrder = Order::factory()->create([
@@ -210,7 +210,7 @@ class OrderTest extends TestCase
         $this->assertNotNull($pickupOrder->delivery_address);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_have_different_payment_methods()
     {
         $cardOrder = Order::factory()->create([
@@ -236,7 +236,7 @@ class OrderTest extends TestCase
         $this->assertEquals('online', $onlineOrder->payment_method);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_store_payment_intent_id_for_stripe()
     {
         $order = Order::factory()->create([

@@ -15,7 +15,7 @@ class UserTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_create_a_user()
     {
         $user = User::create([
@@ -31,7 +31,7 @@ class UserTest extends TestCase
         $this->assertEquals(UserRole::CLIENT, $user->role);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_casts_role_to_enum()
     {
         $user = User::factory()->create([
@@ -42,7 +42,7 @@ class UserTest extends TestCase
         $this->assertEquals(UserRole::OWNER, $user->role);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_hides_password_and_remember_token()
     {
         $user = User::factory()->create([
@@ -55,7 +55,7 @@ class UserTest extends TestCase
         $this->assertArrayNotHasKey('remember_token', $userArray);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_have_multiple_orders()
     {
         $user = User::factory()->create();
@@ -76,7 +76,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->orders->contains($order2));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_own_restaurants()
     {
         $ownerUser = User::factory()->create([
@@ -96,7 +96,7 @@ class UserTest extends TestCase
         $this->assertTrue($ownerUser->restaurants->contains($restaurant2));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function customer_cannot_own_restaurants()
     {
         $customerUser = User::factory()->create([
@@ -108,7 +108,7 @@ class UserTest extends TestCase
         $this->assertCount(0, $customerUser->restaurants);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_have_cart_items()
     {
         $user = User::factory()->create();
@@ -121,7 +121,7 @@ class UserTest extends TestCase
         $this->assertTrue($user->cartItems->contains($cartItem));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_check_if_user_is_owner()
     {
         $owner = User::factory()->create(['role' => UserRole::OWNER]);
@@ -133,7 +133,7 @@ class UserTest extends TestCase
         $this->assertFalse($admin->isOwner());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_check_if_user_is_customer()
     {
         $owner = User::factory()->create(['role' => UserRole::OWNER]);
@@ -145,7 +145,7 @@ class UserTest extends TestCase
         $this->assertFalse($admin->isCustomer());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_check_if_user_is_admin()
     {
         $owner = User::factory()->create(['role' => UserRole::OWNER]);
@@ -157,7 +157,7 @@ class UserTest extends TestCase
         $this->assertTrue($admin->isAdmin());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_encrypts_password_when_set()
     {
         $user = User::factory()->create([
@@ -168,7 +168,7 @@ class UserTest extends TestCase
         $this->assertTrue(Hash::check('plaintext-password', $user->password));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_find_user_by_email()
     {
         $user = User::factory()->create([
@@ -181,7 +181,7 @@ class UserTest extends TestCase
         $this->assertEquals($user->id, $foundUser->id);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function email_must_be_unique()
     {
         User::factory()->create([
@@ -195,7 +195,7 @@ class UserTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_has_timestamps()
     {
         $user = User::factory()->create();
@@ -204,7 +204,7 @@ class UserTest extends TestCase
         $this->assertNotNull($user->updated_at);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function it_can_have_different_roles()
     {
         $customer = User::factory()->create(['role' => UserRole::CLIENT]);
