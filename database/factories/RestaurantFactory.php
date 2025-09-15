@@ -14,7 +14,7 @@ class RestaurantFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'name' => $this->faker->company().' Restaurant',
+            'name' => $this->faker->company() . ' Restaurant',
             'description' => $this->faker->paragraph(),
             'cuisine_type' => $this->faker->randomElement(['Italian', 'Chinese', 'Mexican', 'Indian', 'American', 'Japanese', 'Thai', 'French']),
             'phone_number' => $this->faker->phoneNumber(),
@@ -29,7 +29,10 @@ class RestaurantFactory extends Factory
             'delivery_fee' => $this->faker->randomFloat(2, 2, 8),
             'minimum_order' => $this->faker->randomFloat(2, 15, 30),
             'delivery_range_km' => $this->faker->numberBetween(5, 25),
-            'is_accepted' => $this->faker->boolean(90),
+            // Tests expect owners' restaurants to be accepted by default. Using a deterministic
+            // true value avoids flaky failures where the factory randomly produced an unaccepted
+            // restaurant and the owner middleware returned 403 for owner routes.
+            'is_accepted' => true,
         ];
     }
 

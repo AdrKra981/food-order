@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\PromoCode;
 use App\Models\Restaurant;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class PromoCodeFactory extends Factory
 {
@@ -14,8 +15,12 @@ class PromoCodeFactory extends Factory
     {
         return [
             'restaurant_id' => Restaurant::factory(),
-            'code' => strtoupper($this->faker->unique()->lexify('???###')),
-            'name' => $this->faker->words(2, true).' Discount',
+            // Use a random string for the promo code rather than faker->unique() which can
+            // collide under parallel test workers. Str::upper(Str::random(8)) provides
+            // high-entropy codes per process. If your DB has a uniqueness constraint and
+            // collisions still occur, we can fall back to checking existence in the DB.
+            'code' => Str::upper(Str::random(8)),
+            'name' => $this->faker->words(2, true) . ' Discount',
             'description' => $this->faker->sentence(),
             'discount_type' => $this->faker->randomElement(['percentage', 'fixed_amount']),
             'discount_value' => $this->faker->randomFloat(2, 5, 50),
