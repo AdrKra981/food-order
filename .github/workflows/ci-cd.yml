@@ -127,7 +127,16 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image (buildx)
+        env:
+          IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/food-ordering-platform:latest
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/food-ordering-platform:latest .
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/food-ordering-platform:latest
+          echo "Starting docker build (buildx) with plain progress to surface logs"
+          echo "--- repo tree (top-level) ---"
+          ls -la
+          echo "--- recursive tree (first 6 levels) ---"
+          find . -maxdepth 6 -type f | sed -n '1,200p'
+          echo "--- Dockerfile contents ---"
+          sed -n '1,200p' Dockerfile || true
+          DOCKER_BUILDKIT=1 docker build --progress=plain -f Dockerfile -t $IMAGE_NAME .
+          docker push $IMAGE_NAME
