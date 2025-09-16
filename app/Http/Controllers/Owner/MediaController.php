@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class MediaController extends Controller
 {
@@ -67,17 +68,52 @@ class MediaController extends Controller
                 'file' => 'required|image|max:10240',
             ]);
             $file = $request->file('file');
-            $filename = uniqid().'.'.$file->getClientOriginalExtension();
-            $path = 'restaurants/'.$restaurant->id.'/'.$filename;
-            Storage::disk('public')->put($path, file_get_contents($file));
-            $media = $restaurant->media()->create([
-                'filename' => $filename,
-                'original_name' => $file->getClientOriginalName(),
-                'mime_type' => $file->getMimeType(),
-                'size' => $file->getSize(),
-                'path' => $path,
-                'type' => 'image',
-            ]);
+            $ext = $file->getClientOriginalExtension();
+            $folder = 'restaurants/'.Str::slug($restaurant->name ?: $restaurant->id);
+
+            // Prefer cloudinary disk when configured, fallback to public
+            if (config('filesystems.disks.cloudinary.driver') === 'cloudinary') {
+                // Use putFile to let the adapter generate a public_id; set folder option
+                $uploaded = Storage::disk('cloudinary')->putFile($folder, $file);
+                // try to obtain a secure URL for the uploaded resource; if adapter does not
+                // support url(), fall back to storing the adapter identifier
+                $path = $uploaded;
+                try {
+                    if (method_exists(Storage::disk('cloudinary'), 'url')) {
+                        $path = Storage::disk('cloudinary')->url($uploaded);
+                    }
+                } catch (\Throwable $e) {
+                    // ignore and keep $path as adapter identifier
+                }
+
+                // store public_url when we were able to generate a secure URL
+                $publicUrl = null;
+                if (is_string($path) && str_starts_with($path, 'http')) {
+                    $publicUrl = $path;
+                }
+
+                $media = $restaurant->media()->create([
+                    'filename' => $uploaded,
+                    'original_name' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getMimeType(),
+                    'size' => $file->getSize(),
+                    'path' => $path,
+                    'public_url' => $publicUrl,
+                    'type' => 'image',
+                ]);
+            } else {
+                $filename = uniqid().'.'.$ext;
+                $path = $folder.'/'.$filename;
+                Storage::disk('public')->put($path, file_get_contents($file));
+                $media = $restaurant->media()->create([
+                    'filename' => $filename,
+                    'original_name' => $file->getClientOriginalName(),
+                    'mime_type' => $file->getMimeType(),
+                    'size' => $file->getSize(),
+                    'path' => $path,
+                    'type' => 'image',
+                ]);
+            }
 
             return response()->json($media, 201);
         } else {
@@ -90,17 +126,46 @@ class MediaController extends Controller
             }
             $uploadedFiles = [];
             foreach ($files as $file) {
-                $filename = uniqid().'.'.$file->getClientOriginalExtension();
-                $path = 'restaurants/'.$restaurant->id.'/'.$filename;
-                Storage::disk('public')->put($path, file_get_contents($file));
-                $media = $restaurant->media()->create([
-                    'filename' => $filename,
-                    'original_name' => $file->getClientOriginalName(),
-                    'mime_type' => $file->getMimeType(),
-                    'size' => $file->getSize(),
-                    'path' => $path,
-                    'type' => 'image',
-                ]);
+                $ext = $file->getClientOriginalExtension();
+                $folder = 'restaurants/'.Str::slug($restaurant->name ?: $restaurant->id);
+                if (config('filesystems.disks.cloudinary.driver') === 'cloudinary') {
+                    $uploaded = Storage::disk('cloudinary')->putFile($folder, $file);
+                    $path = $uploaded;
+                    try {
+                        if (method_exists(Storage::disk('cloudinary'), 'url')) {
+                            $path = Storage::disk('cloudinary')->url($uploaded);
+                        }
+                    } catch (\Throwable $e) {
+                        // ignore and keep $path as adapter identifier
+                    }
+
+                    $publicUrl = null;
+                    if (is_string($path) && str_starts_with($path, 'http')) {
+                        $publicUrl = $path;
+                    }
+
+                    $media = $restaurant->media()->create([
+                        'filename' => $uploaded,
+                        'original_name' => $file->getClientOriginalName(),
+                        'mime_type' => $file->getMimeType(),
+                        'size' => $file->getSize(),
+                        'path' => $path,
+                        'public_url' => $publicUrl,
+                        'type' => 'image',
+                    ]);
+                } else {
+                    $filename = uniqid().'.'.$ext;
+                    $path = $folder.'/'.$filename;
+                    Storage::disk('public')->put($path, file_get_contents($file));
+                    $media = $restaurant->media()->create([
+                        'filename' => $filename,
+                        'original_name' => $file->getClientOriginalName(),
+                        'mime_type' => $file->getMimeType(),
+                        'size' => $file->getSize(),
+                        'path' => $path,
+                        'type' => 'image',
+                    ]);
+                }
                 $uploadedFiles[] = $media;
             }
 
@@ -146,8 +211,20 @@ class MediaController extends Controller
             abort(403, 'You can only delete media from your own restaurant.');
         }
         // Delete the media file from storage
-        $filePath = 'restaurants/'.$media->restaurant_id.'/'.$media->filename;
-        Storage::disk('public')->delete($filePath);
+        // Delete the media file from the configured storage
+        $folder = 'restaurants/'.Str::slug($restaurant->name ?: $restaurant->id);
+        if (config('filesystems.disks.cloudinary.driver') === 'cloudinary') {
+            // filename holds the cloudinary public id / path returned by the adapter
+            try {
+                Storage::disk('cloudinary')->delete($media->filename);
+            } catch (\Throwable $e) {
+                // swallow errors during delete to avoid blocking user; log if needed
+                logger()->warning('Failed to delete media from cloudinary: '.$e->getMessage());
+            }
+        } else {
+            $filePath = $folder.'/'.$media->filename;
+            Storage::disk('public')->delete($filePath);
+        }
         // Delete the database record
         $media->delete();
         if (request()->wantsJson()) {
@@ -179,9 +256,19 @@ class MediaController extends Controller
 
         $deletedCount = 0;
         foreach ($mediaItems as $media) {
-            // Delete the media file from storage
-            $filePath = 'restaurants/'.$media->restaurant_id.'/'.$media->filename;
-            Storage::disk('public')->delete($filePath);
+            // Delete the media file from storage depending on configured disk
+            $restaurant = \App\Models\Restaurant::find($media->restaurant_id);
+            $folder = 'restaurants/'.Str::slug($restaurant->name ?: $restaurant->id);
+            if (config('filesystems.disks.cloudinary.driver') === 'cloudinary') {
+                try {
+                    Storage::disk('cloudinary')->delete($media->filename);
+                } catch (\Throwable $e) {
+                    logger()->warning('Failed to delete media from cloudinary during bulk delete: '.$e->getMessage());
+                }
+            } else {
+                $filePath = $folder.'/'.$media->filename;
+                Storage::disk('public')->delete($filePath);
+            }
 
             // Delete the database record
             $media->delete();

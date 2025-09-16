@@ -10,7 +10,7 @@ class Media extends Model
     use HasFactory;
 
     protected $fillable = [
-        'restaurant_id', 'filename', 'original_name', 'mime_type', 'size',
+        'restaurant_id', 'filename', 'original_name', 'mime_type', 'size', 'path', 'type', 'public_url',
     ];
 
     public function restaurant()

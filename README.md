@@ -59,3 +59,29 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Cloudinary integration (optional)
+
+If you want uploaded media to be stored on Cloudinary (instead of local disk), follow these steps:
+
+1. Install a Cloudinary filesystem adapter for Laravel, for example:
+
+	composer require cloudinary-labs/cloudinary-laravel
+
+2. Publish the config and set your Cloudinary credentials (or set CLOUDINARY_URL):
+
+	- CLOUDINARY_URL=cloudinary://<api_key>:<api_secret>@<cloud_name>
+	or set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET in your .env
+
+3. In your .env set the default filesystem (optional):
+
+	FILESYSTEM_DISK=cloudinary
+
+4. This project stores media in Cloudinary under the folder: restaurants/{restaurant-slug}
+	The code uses a slugified restaurant name; if the restaurant has no name yet it falls back to the id.
+
+5. After installing, run your tests and try uploading an image in the media library.
+
+Notes:
+- The code automatically falls back to the `public` disk when a Cloudinary disk isn't configured.
+- Uploaded media records keep the returned Cloudinary identifier in the `filename` and `path` columns; the `path` value can be passed to Cloudinary SDK or a CDN URL generator to get the full secure URL.

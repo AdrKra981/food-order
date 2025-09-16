@@ -60,6 +60,12 @@ return [
             'report' => false,
         ],
 
+        'cloudinary' => [
+            'driver' => 'cloudinary',
+            // The cloudinary-laravel package will read credentials from env
+            // e.g. CLOUDINARY_URL or CLOUDINARY_CLOUD_NAME/CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET
+        ],
+
     ],
 
     /*
