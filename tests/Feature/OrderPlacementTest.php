@@ -44,8 +44,8 @@ class OrderPlacementTest extends TestCase
             'payment_method' => 'card',
         ];
 
-        $this->actingAs($user);
-        $response = $this->postJson(route('customer.orders.store'), $payload);
+    $this->actingAs($user);
+    $response = $this->postJson(route('customer.orders.store'), $payload);
         $response->assertStatus(201);
         $response->assertJsonFragment([
             'customer_name' => 'Jane Doe',
