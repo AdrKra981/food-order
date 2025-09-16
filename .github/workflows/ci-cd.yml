@@ -93,56 +93,11 @@ jobs:
       - name: Generate Laravel key
         run: php artisan key:generate
 
-      - name: Generate APP_KEY for tests and write .env.testing
-        run: |
-          # Generate a valid APP_KEY and write it to GITHUB_ENV for later steps
-          APP_KEY_VALUE=$(php artisan key:generate --show)
-          echo "APP_KEY=${APP_KEY_VALUE}" >> $GITHUB_ENV
-
-          # Write a minimal .env.testing file directly using the generated key so
-          # Laravel picks up a valid APP_KEY and test-friendly settings regardless
-          # of dotenv loading order on the runner.
-          cat > .env.testing <<EOF
-          APP_NAME=FoodOrder
-          APP_ENV=testing
-          APP_KEY=${APP_KEY_VALUE}
-          APP_DEBUG=false
-          APP_URL=http://localhost
-
-          DB_CONNECTION=sqlite
-          DB_DATABASE=:memory:
-
-          SESSION_DRIVER=array
-          CACHE_DRIVER=array
-          QUEUE_CONNECTION=sync
-
-          MAIL_MAILER=array
-          EOF
-
-          # Also ensure the primary .env has the same APP_KEY so any processes
-          # that read .env (instead of .env.testing) still see a valid key.
-          if [ -f .env ]; then
-            # Remove any existing APP_KEY lines and append the new one
-            sed -i "/^APP_KEY=/d" .env || true
-          else
-            cp .env.example .env || true
-          fi
-          echo "APP_KEY=${APP_KEY_VALUE}" >> .env
-          # Remove any leading indentation that may have been introduced by YAML
-          # so that dotenv parsing sees keys starting at column 1.
-          sed -i 's/^[[:space:]]*//' .env.testing || true
-          sed -i 's/^[[:space:]]*//' .env || true
-
-      - name: Clear config/cache so APP_KEY is loaded
-        run: |
-          php artisan config:clear || true
-          php artisan cache:clear || true
-
       - name: Run migrations
         run: php artisan migrate --env=testing
 
       - name: Run tests
-        run: php artisan test --env=testing
+        run: php artisan test
 
   docker-push:
     needs: build-test
