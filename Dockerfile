@@ -9,7 +9,17 @@ RUN apt-get update && apt-get install -y python3 build-essential ca-certificates
 COPY package*.json ./
 COPY resources/ resources/
 COPY vite.config.js .
-RUN npm ci --silent
+# Attempt deterministic install first; if it fails due to optional dep/platform binary issues,
+# remove package-lock.json and retry npm install inside the container so native binaries
+# are resolved for the build platform (Linux).
+RUN set -e; \
+        if npm ci --silent; then \
+            echo "npm ci succeeded"; \
+        else \
+            echo "npm ci failed — retrying by removing package-lock.json and running npm install"; \
+            rm -f package-lock.json; \
+            npm install --silent; \
+        fi
 RUN npm run build
 
 ### Stage 2: PHP runtime
