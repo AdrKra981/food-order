@@ -16,6 +16,7 @@ class OrderPlacementTest extends TestCase
 
     public function test_customer_can_place_order_with_items_and_promo_code()
     {
+        /** @var \App\Models\User $user */
         $user = User::factory()->create(['role' => \App\Enums\UserRole::CLIENT]);
         $restaurant = Restaurant::factory()->create();
         $category = MenuCategory::factory()->create(['restaurant_id' => $restaurant->id]);
@@ -44,8 +45,8 @@ class OrderPlacementTest extends TestCase
             'payment_method' => 'card',
         ];
 
-    $this->actingAs($user);
-    $response = $this->postJson(route('customer.orders.store'), $payload);
+        $this->actingAs($user);
+        $response = $this->postJson(route('customer.orders.store'), $payload);
         $response->assertStatus(201);
         $response->assertJsonFragment([
             'customer_name' => 'Jane Doe',
