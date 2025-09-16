@@ -104,6 +104,20 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify Dockerfile exists
+        run: |
+          echo "Listing repo root:";
+          ls -la
+          if [ -f Dockerfile ]; then
+            echo "Dockerfile found";
+            head -n 20 Dockerfile || true
+          else
+            echo "ERROR: Dockerfile not found in repo root";
+            exit 1;
+          fi
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
