@@ -7,8 +7,8 @@ use App\Models\Media;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class MediaController extends Controller
 {
@@ -227,7 +227,7 @@ class MediaController extends Controller
         }
 
         $restaurant = \App\Models\Restaurant::find($media->restaurant_id);
-    if (! $restaurant || (int) $restaurant->user_id !== (int) $user->id) {
+        if (! $restaurant || (int) $restaurant->user_id !== (int) $user->id) {
             // Log details to help diagnose ownership/authorization mismatches
             try {
                 logger()->warning('Media delete authorization failed', [

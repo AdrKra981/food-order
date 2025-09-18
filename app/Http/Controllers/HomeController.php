@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Restaurant;
 use App\Models\Media;
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -28,6 +28,7 @@ class HomeController extends Controller
         $restaurants = $query->get()
             ->map(function ($restaurant) {
                 $image = Media::find($restaurant->image_id);
+
                 return [
                     'id' => $restaurant->id,
                     'name' => $restaurant->name,

@@ -1,14 +1,15 @@
 <?php
+
 // Usage: php scripts/dump_media_list.php [limit]
 // Boots Laravel and prints last N media rows for inspection.
-$cwd = __DIR__ . '/..';
+$cwd = __DIR__.'/..';
 chdir($cwd);
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
-$limit = isset($argv[1]) ? (int)$argv[1] : 50;
+$limit = isset($argv[1]) ? (int) $argv[1] : 50;
 use App\Models\Media;
 
 $rows = Media::with('restaurant')->latest()->take($limit)->get();

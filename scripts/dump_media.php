@@ -1,10 +1,11 @@
 <?php
+
 // Usage: php scripts/dump_media.php <id>
 // Boots Laravel framework and dumps Media record as JSON for inspection.
-$cwd = __DIR__ . '/..';
+$cwd = __DIR__.'/..';
 chdir($cwd);
-require __DIR__ . '/../vendor/autoload.php';
-$app = require_once __DIR__ . '/../bootstrap/app.php';
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
@@ -19,7 +20,7 @@ use App\Models\Media;
 try {
     $media = Media::with('restaurant')->find($id);
     if (! $media) {
-        echo json_encode(['error' => 'not_found', 'id' => (int)$id]);
+        echo json_encode(['error' => 'not_found', 'id' => (int) $id]);
         exit(0);
     }
 

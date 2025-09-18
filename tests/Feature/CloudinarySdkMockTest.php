@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\Owner\MediaController;
 use App\Models\Media;
 use App\Models\Restaurant;
 use App\Models\User;
@@ -10,7 +11,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Mockery;
 use Tests\TestCase;
-use App\Http\Controllers\Owner\MediaController;
 
 class CloudinarySdkMockTest extends TestCase
 {
@@ -30,8 +30,8 @@ class CloudinarySdkMockTest extends TestCase
         $cloudMock->shouldReceive('image')->with('restaurants/test/public_id')->andReturn($imageMock);
 
         // Setup user + restaurant and perform upload
-    /** @var \App\Models\User $owner */
-    $owner = User::factory()->create(['role' => 'OWNER']);
+        /** @var \App\Models\User $owner */
+        $owner = User::factory()->create(['role' => 'OWNER']);
         $restaurant = Restaurant::factory()->create(['user_id' => $owner->id]);
         $this->actingAs($owner);
 
@@ -66,8 +66,8 @@ class CloudinarySdkMockTest extends TestCase
         $cloudMock->shouldReceive('uploadApi')->andReturn($apiMock);
 
         // Create owner/restaurant/media record
-    /** @var \App\Models\User $owner */
-    $owner = User::factory()->create(['role' => 'OWNER']);
+        /** @var \App\Models\User $owner */
+        $owner = User::factory()->create(['role' => 'OWNER']);
         $restaurant = Restaurant::factory()->create(['user_id' => $owner->id]);
         $media = $restaurant->media()->create([
             'filename' => 'public_id',
@@ -87,19 +87,19 @@ class CloudinarySdkMockTest extends TestCase
 
         // Hit debug endpoint to inspect authenticated user/restaurant context in the request lifecycle
         $debug = $this->getJson('/debug-user');
-        file_put_contents('php://stdout', "\nDEBUG /debug-user: " . $debug->getContent() . "\n");
+        file_put_contents('php://stdout', "\nDEBUG /debug-user: ".$debug->getContent()."\n");
 
         // Sanity checks before calling delete to help diagnose authorization failures
         $media->refresh();
         $restaurant->refresh();
-    // remove HTTP route call (middleware) and call controller directly to test delete logic
+        // remove HTTP route call (middleware) and call controller directly to test delete logic
 
-    config(['filesystems.disks.cloudinary.driver' => 'cloudinary']);
-    config(['cloudinary.cloud_url' => 'cloudinary://key:secret@demo']);
+        config(['filesystems.disks.cloudinary.driver' => 'cloudinary']);
+        config(['cloudinary.cloud_url' => 'cloudinary://key:secret@demo']);
 
-    // Call controller method directly to avoid route middleware (authorization) and focus on SDK fallback
-    $controller = new MediaController();
-    $controller->destroy($media);
+        // Call controller method directly to avoid route middleware (authorization) and focus on SDK fallback
+        $controller = new MediaController;
+        $controller->destroy($media);
 
         $this->assertDatabaseMissing('media', ['id' => $media->id]);
     }
