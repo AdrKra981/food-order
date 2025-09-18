@@ -1,5 +1,6 @@
 import OwnerLayout from "@/Layouts/OwnerLayout";
 import { Head, useForm } from "@inertiajs/react";
+import MediaSelector from "@/Components/MediaSelector";
 import {
     BuildingStorefrontIcon,
     MapPinIcon,
@@ -8,7 +9,7 @@ import {
     ChevronDownIcon,
 } from "@heroicons/react/24/outline";
 
-export default function RestaurantSettings({ restaurant, errors }) {
+export default function RestaurantSettings({ restaurant, errors, media = [] }) {
     const { data, setData, put, processing } = useForm({
         name: restaurant?.name || "",
         description: restaurant?.description || "",
@@ -20,6 +21,7 @@ export default function RestaurantSettings({ restaurant, errors }) {
         cuisine_type: restaurant?.cuisine_type || "",
         delivery_fee: restaurant?.delivery_fee || 0,
         minimum_order: restaurant?.minimum_order || 0,
+        image_id: restaurant?.image_id || null,
     });
 
     const submit = (e) => {
@@ -85,6 +87,33 @@ export default function RestaurantSettings({ restaurant, errors }) {
                                         {errors.name && (
                                             <p className="mt-1 text-sm text-red-600">
                                                 {errors.name}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">
+                                            Main Image
+                                        </label>
+                                        <div className="mt-1">
+                                            <MediaSelector
+                                                value={
+                                                    restaurant?.image || null
+                                                }
+                                                media={media || []}
+                                                onChange={(selected) =>
+                                                    setData(
+                                                        "image_id",
+                                                        selected
+                                                            ? selected.id
+                                                            : null
+                                                    )
+                                                }
+                                            />
+                                        </div>
+                                        {errors.image_id && (
+                                            <p className="mt-1 text-sm text-red-600">
+                                                {errors.image_id}
                                             </p>
                                         )}
                                     </div>

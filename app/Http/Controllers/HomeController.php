@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Restaurant;
+use App\Models\Media;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -15,7 +16,7 @@ class HomeController extends Controller
         $searchLng = $request->get('lng');
 
         $query = Restaurant::where('is_accepted', true)
-            ->with(['user', 'media']);
+            ->with(['user', 'media', 'image']);
 
         // If location is provided, filter by delivery range
         if ($searchLat && $searchLng) {
@@ -26,6 +27,7 @@ class HomeController extends Controller
 
         $restaurants = $query->get()
             ->map(function ($restaurant) {
+                $image = Media::find($restaurant->image_id);
                 return [
                     'id' => $restaurant->id,
                     'name' => $restaurant->name,
@@ -40,7 +42,7 @@ class HomeController extends Controller
                     'opening_hours' => $restaurant->opening_hours ? $restaurant->opening_hours->format('H:i') : null,
                     'closing_hours' => $restaurant->closing_hours ? $restaurant->closing_hours->format('H:i') : null,
                     'owner_name' => $restaurant->user->name,
-                    'image' => $restaurant->media->first() ? '/storage/restaurants/'.$restaurant->id.'/'.$restaurant->media->first()->filename : null,
+                    'image' => $image ? $image->path : null,
                 ];
             });
 
@@ -77,7 +79,8 @@ class HomeController extends Controller
                 'opening_hours' => $restaurant->opening_hours ? $restaurant->opening_hours->format('H:i') : null,
                 'closing_hours' => $restaurant->closing_hours ? $restaurant->closing_hours->format('H:i') : null,
                 'owner_name' => $restaurant->user->name,
-                'image' => $restaurant->media->first() ? '/storage/restaurants/'.$restaurant->id.'/'.$restaurant->media->first()->filename : null,
+                // Prefer explicit main image (image relation) then fall back to first media item
+                'image' => $restaurant->image ? $restaurant->image->url : ($restaurant->media->first() ? $restaurant->media->first()->url : null),
                 'menuCategories' => $restaurant->menuCategories->map(function ($category) use ($restaurant) {
                     return [
                         'id' => $category->id,

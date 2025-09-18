@@ -79,8 +79,9 @@ class MediaController extends Controller
                 // support url(), fall back to storing the adapter identifier
                 $path = $uploaded;
                 try {
-                    if (method_exists(Storage::disk('cloudinary'), 'url')) {
-                        $path = Storage::disk('cloudinary')->url($uploaded);
+                    if (class_exists('\Cloudinary\Cloudinary')) {
+                        $cloudinary = new \Cloudinary\Cloudinary(config('cloudinary.cloud_url') ?: env('CLOUDINARY_URL'));
+                        $path = $cloudinary->image($uploaded)->toUrl();
                     }
                 } catch (\Throwable $e) {
                     // ignore and keep $path as adapter identifier
@@ -132,8 +133,9 @@ class MediaController extends Controller
                     $uploaded = Storage::disk('cloudinary')->putFile($folder, $file);
                     $path = $uploaded;
                     try {
-                        if (method_exists(Storage::disk('cloudinary'), 'url')) {
-                            $path = Storage::disk('cloudinary')->url($uploaded);
+                        if (class_exists('\Cloudinary\Cloudinary')) {
+                            $cloudinary = new \Cloudinary\Cloudinary(config('cloudinary.cloud_url'));
+                            $path = $cloudinary->image($uploaded)->toUrl();
                         }
                     } catch (\Throwable $e) {
                         // ignore and keep $path as adapter identifier
@@ -200,23 +202,77 @@ class MediaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Media $media)
+    public function destroy($id)
     {
         $user = Auth::user();
+        $media = Media::find($id);
+
+        if (! $media->restaurant_id) {
+            try {
+                logger()->warning('Media delete attempted for media without restaurant_id', [
+                    'auth_user_id' => $user?->id,
+                    'media_id' => $media->id,
+                    'media_filename' => $media->filename,
+                    'request_path' => request()->path(),
+                ]);
+            } catch (\Throwable $e) {
+                // ignore logging failures
+            }
+
+            if (request()->wantsJson()) {
+                return response()->json(['message' => 'Media record is missing restaurant association'], 404);
+            }
+
+            abort(404, 'Media record is missing restaurant association');
+        }
+
         $restaurant = \App\Models\Restaurant::find($media->restaurant_id);
-        if (! $restaurant || $restaurant->user_id !== $user->id) {
+    if (! $restaurant || (int) $restaurant->user_id !== (int) $user->id) {
+            // Log details to help diagnose ownership/authorization mismatches
+            try {
+                logger()->warning('Media delete authorization failed', [
+                    'auth_user_id' => $user?->id,
+                    'media_id' => $media->id,
+                    'media_restaurant_id' => $media->restaurant_id,
+                    'restaurant_found' => $restaurant ? true : false,
+                    'restaurant_user_id' => $restaurant?->user_id,
+                    'request_path' => request()->path(),
+                    'request_method' => request()->method(),
+                ]);
+            } catch (\Throwable $e) {
+                // ignore logging failures
+            }
+
             if (request()->wantsJson()) {
                 return response()->json(['message' => 'You can only delete media from your own restaurant.'], 403);
             }
+
             abort(403, 'You can only delete media from your own restaurant.');
         }
         // Delete the media file from storage
         // Delete the media file from the configured storage
         $folder = 'restaurants/'.Str::slug($restaurant->name ?: $restaurant->id);
         if (config('filesystems.disks.cloudinary.driver') === 'cloudinary') {
-            // filename holds the cloudinary public id / path returned by the adapter
+            // filename should hold the Cloudinary public id (adapter identifier)
+            $publicId = $media->filename ?: $media->path;
             try {
-                Storage::disk('cloudinary')->delete($media->filename);
+                $deleted = false;
+                try {
+                    $deleted = Storage::disk('cloudinary')->delete($publicId);
+                } catch (\Throwable $e) {
+                    logger()->warning('Cloudinary filesystem delete failed, will try SDK: '.$e->getMessage());
+                }
+
+                // If the adapter delete didn't work, try Cloudinary SDK as a fallback
+                if (! $deleted && class_exists('\Cloudinary\Cloudinary')) {
+                    try {
+                        $cloudinary = new \Cloudinary\Cloudinary(config('cloudinary.cloud_url') ?: env('CLOUDINARY_URL'));
+                        // Use the admin API to destroy the resource
+                        $cloudinary->uploadApi()->destroy($publicId);
+                    } catch (\Throwable $e) {
+                        logger()->warning('Cloudinary SDK destroy failed: '.$e->getMessage());
+                    }
+                }
             } catch (\Throwable $e) {
                 // swallow errors during delete to avoid blocking user; log if needed
                 logger()->warning('Failed to delete media from cloudinary: '.$e->getMessage());
@@ -260,8 +316,23 @@ class MediaController extends Controller
             $restaurant = \App\Models\Restaurant::find($media->restaurant_id);
             $folder = 'restaurants/'.Str::slug($restaurant->name ?: $restaurant->id);
             if (config('filesystems.disks.cloudinary.driver') === 'cloudinary') {
+                $publicId = $media->filename ?: $media->path;
                 try {
-                    Storage::disk('cloudinary')->delete($media->filename);
+                    $deleted = false;
+                    try {
+                        $deleted = Storage::disk('cloudinary')->delete($publicId);
+                    } catch (\Throwable $e) {
+                        logger()->warning('Cloudinary filesystem delete failed during bulk delete, will try SDK: '.$e->getMessage());
+                    }
+
+                    if (! $deleted && class_exists('\Cloudinary\Cloudinary')) {
+                        try {
+                            $cloudinary = new \Cloudinary\Cloudinary(config('cloudinary.cloud_url') ?: env('CLOUDINARY_URL'));
+                            $cloudinary->uploadApi()->destroy($publicId);
+                        } catch (\Throwable $e) {
+                            logger()->warning('Cloudinary SDK destroy failed during bulk delete: '.$e->getMessage());
+                        }
+                    }
                 } catch (\Throwable $e) {
                     logger()->warning('Failed to delete media from cloudinary during bulk delete: '.$e->getMessage());
                 }

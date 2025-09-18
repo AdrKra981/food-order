@@ -85,7 +85,11 @@ export default function Index() {
                                     >
                                         {item.media ? (
                                             <img
-                                                src={`/storage/restaurants/${item.restaurant_id}/${item.media.filename}`}
+                                                src={
+                                                    item.media.url
+                                                        ? item.media.url
+                                                        : `/storage/restaurants/${item.restaurant_id}/${item.media.filename}`
+                                                }
                                                 alt={item.name}
                                                 className="w-full h-48 object-cover"
                                             />

@@ -17,8 +17,12 @@ class RestaurantController extends Controller
                 ->with('error', 'No restaurant found for your account.');
         }
 
+        // Load media so the MediaSelector can show available images
+        $restaurant->loadMissing(['media', 'image']);
+
         return Inertia::render('Owner/Restaurant/Edit', [
             'restaurant' => $restaurant,
+            'media' => $restaurant->media,
         ]);
     }
 
@@ -42,6 +46,7 @@ class RestaurantController extends Controller
             'cuisine_type' => 'nullable|string|max:255',
             'delivery_fee' => 'nullable|numeric|min:0',
             'minimum_order' => 'nullable|numeric|min:0',
+            'image_id' => 'nullable|exists:media,id',
         ]);
 
         $restaurant->update($request->only([
@@ -55,6 +60,7 @@ class RestaurantController extends Controller
             'cuisine_type',
             'delivery_fee',
             'minimum_order',
+            'image_id',
         ]));
 
         return redirect()->route('owner.restaurant.edit')

@@ -38,7 +38,11 @@ export default function MediaSelector({
                 <div className="relative group">
                     <div className="w-32 h-32 border-2 border-gray-200 rounded-lg overflow-hidden">
                         <img
-                            src={`/storage/restaurants/${selectedImage.restaurant_id}/${selectedImage.filename}`}
+                            src={
+                                selectedImage.url
+                                    ? selectedImage.url
+                                    : `/storage/restaurants/${selectedImage.restaurant_id}/${selectedImage.filename}`
+                            }
                             alt={selectedImage.original_name}
                             className="w-full h-full object-cover"
                         />
@@ -124,7 +128,11 @@ export default function MediaSelector({
                                             }`}
                                         >
                                             <img
-                                                src={`/storage/restaurants/${item.restaurant_id}/${item.filename}`}
+                                                src={
+                                                    item.url
+                                                        ? item.url
+                                                        : `/storage/restaurants/${item.restaurant_id}/${item.filename}`
+                                                }
                                                 alt={item.original_name}
                                                 className="w-full h-full object-cover"
                                                 onError={(e) => {

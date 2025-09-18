@@ -28,6 +28,7 @@ class Restaurant extends Model
         'delivery_fee',
         'minimum_order',
         'delivery_range_km',
+        'image_id',
     ];
 
     protected $casts = [
@@ -53,6 +54,11 @@ class Restaurant extends Model
     public function media()
     {
         return $this->hasMany(Media::class);
+    }
+
+    public function image()
+    {
+        return $this->belongsTo(Media::class, 'image_id');
     }
 
     public function orders()

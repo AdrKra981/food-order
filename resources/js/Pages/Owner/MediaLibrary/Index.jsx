@@ -3,6 +3,7 @@ import { usePage } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
 import { useState } from "react";
 import OwnerLayout from "../../../Layouts/OwnerLayout";
+import ConfirmModal from "../../../Components/ConfirmModal";
 import {
     PlusIcon,
     TrashIcon,
@@ -14,33 +15,34 @@ export default function MediaIndex() {
     const { media } = usePage().props;
     const [selectedItems, setSelectedItems] = useState([]);
     const [isSelecting, setIsSelecting] = useState(false);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [confirmPayload, setConfirmPayload] = useState({});
 
     const handleDelete = (id, fileName) => {
-        if (
-            confirm(
-                `Are you sure you want to delete "${fileName}"? This action cannot be undone.`
-            )
-        ) {
-            router.delete(route("owner.media.destroy", id));
-        }
+        setConfirmPayload({
+            title: "Delete image",
+            message: `Are you sure you want to delete "${fileName}"? This action cannot be undone.`,
+            onConfirm: () => router.delete(route("owner.media.destroy", id)),
+        });
+        setConfirmOpen(true);
     };
 
     const handleBulkDelete = () => {
         if (selectedItems.length === 0) return;
 
-        if (
-            confirm(
-                `Are you sure you want to delete ${selectedItems.length} selected image(s)? This action cannot be undone.`
-            )
-        ) {
-            router.delete(route("owner.media.bulk-destroy"), {
-                data: { media_ids: selectedItems },
-                onSuccess: () => {
-                    setSelectedItems([]);
-                    setIsSelecting(false);
-                },
-            });
-        }
+        setConfirmPayload({
+            title: "Delete selected images",
+            message: `Are you sure you want to delete ${selectedItems.length} selected image(s)? This action cannot be undone.`,
+            onConfirm: () =>
+                router.delete(route("owner.media.bulk-destroy"), {
+                    data: { media_ids: selectedItems },
+                    onSuccess: () => {
+                        setSelectedItems([]);
+                        setIsSelecting(false);
+                    },
+                }),
+        });
+        setConfirmOpen(true);
     };
 
     const toggleSelection = (id) => {
@@ -69,6 +71,13 @@ export default function MediaIndex() {
 
     return (
         <OwnerLayout title="Media Library">
+            <ConfirmModal
+                open={confirmOpen}
+                title={confirmPayload.title}
+                message={confirmPayload.message}
+                onConfirm={confirmPayload.onConfirm}
+                onCancel={() => setConfirmOpen(false)}
+            />
             <div className="max-w-7xl mx-auto">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div className="p-6">
@@ -227,7 +236,7 @@ export default function MediaIndex() {
                                             }
                                         >
                                             <img
-                                                src={`/storage/restaurants/${file.restaurant_id}/${file.filename}`}
+                                                src={file.path}
                                                 alt={file.original_name}
                                                 className="w-full h-full object-cover"
                                                 loading="lazy"

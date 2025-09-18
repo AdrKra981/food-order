@@ -62,8 +62,18 @@ return [
 
         'cloudinary' => [
             'driver' => 'cloudinary',
-            // The cloudinary-laravel package will read credentials from env
-            // e.g. CLOUDINARY_URL or CLOUDINARY_CLOUD_NAME/CLOUDINARY_API_KEY/CLOUDINARY_API_SECRET
+            // Prefer a single CLOUDINARY_URL if present (e.g. cloudinary://key:secret@cloudname)
+            'url' => env('CLOUDINARY_URL'),
+
+            // Fallback individual values the package may read. These keep the array keys
+            // defined so the service provider doesn't try to access undefined indexes.
+            'cloud' => env('CLOUDINARY_CLOUD_NAME'),
+            'key' => env('CLOUDINARY_API_KEY'),
+            'secret' => env('CLOUDINARY_API_SECRET'),
+            'secure' => env('CLOUDINARY_SECURE', true),
+
+            'throw' => false,
+            'report' => false,
         ],
 
     ],
