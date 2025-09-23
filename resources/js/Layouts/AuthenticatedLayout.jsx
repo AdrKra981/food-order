@@ -9,6 +9,7 @@ export default function AuthenticatedLayout({ header, children }) {
     const pageProps = usePage().props;
     const { auth } = pageProps;
     const user = auth?.user;
+    console.log("user", user);
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
@@ -75,7 +76,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         >
                                             Profile
                                         </Dropdown.Link>
-                                        {user?.role === "admin" && (
+                                        {user?.role === "ADMIN" && (
                                             <Dropdown.Link
                                                 href={route(
                                                     "admin.restaurants.pending"
@@ -87,6 +88,30 @@ export default function AuthenticatedLayout({ header, children }) {
                                                 Pending Restaurants
                                             </Dropdown.Link>
                                         )}
+
+                                        {user?.role === "OWNER" && (
+                                            <Dropdown.Link
+                                                href={route("owner.dashboard")}
+                                                active={route().current(
+                                                    "owner.dashboard"
+                                                )}
+                                            >
+                                                Restaurant Dashboard
+                                            </Dropdown.Link>
+                                        )}
+
+                                        {user?.role === "CUSTOMER" && (
+                                            <Dropdown.Link
+                                                href={route("orders")}
+                                                active={route().current(
+                                                    "orders"
+                                                )}
+                                            >
+                                                My Orders
+                                            </Dropdown.Link>
+                                        )}
+
+                                        <hr className="my-1" />
 
                                         <Dropdown.Link
                                             href={route("logout")}

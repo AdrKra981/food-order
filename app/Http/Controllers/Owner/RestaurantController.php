@@ -49,6 +49,17 @@ class RestaurantController extends Controller
             'image_id' => 'nullable|exists:media,id',
         ]);
 
+        // If an image_id was provided, ensure it belongs to this owner's restaurant.
+        if ($request->filled('image_id')) {
+            $media = \App\Models\Media::find($request->input('image_id'));
+
+            if (! $media || (int) $media->restaurant_id !== (int) $restaurant->id) {
+                return back()
+                    ->withInput()
+                    ->with('error', 'The selected image does not belong to your restaurant.');
+            }
+        }
+
         $restaurant->update($request->only([
             'name',
             'description',

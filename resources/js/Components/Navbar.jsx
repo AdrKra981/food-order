@@ -35,9 +35,9 @@ export default function Navbar() {
                     <div className="flex items-center">
                         <button
                             onClick={() => router.visit("/")}
-                            className="flex items-center space-x-2"
+                            className="flex items-center space-x-2 cursor-pointer"
                         >
-                            <FoodieGoLogo />
+                            <FoodieGoLogo className="cursor-pointer" />
                         </button>
                     </div>
 

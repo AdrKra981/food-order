@@ -1,6 +1,6 @@
 import React from "react";
 import { Head, useForm } from "@inertiajs/react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import OwnerLayout from "@/Layouts/OwnerLayout";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
@@ -45,7 +45,21 @@ export default function Create({ auth, categories }) {
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <OwnerLayout
+            header={
+                <div className="flex items-center">
+                    <a
+                        href={route("owner.promo-codes.index")}
+                        className="mr-4 p-2 text-gray-400 hover:text-gray-600"
+                    >
+                        <ArrowLeftIcon className="h-5 w-5" />
+                    </a>
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                        Create Promo Code
+                    </h2>
+                </div>
+            }
+        >
             <Head title="Create Promo Code" />
 
             <div className="py-12">
@@ -506,6 +520,6 @@ export default function Create({ auth, categories }) {
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </OwnerLayout>
     );
 }

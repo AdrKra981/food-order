@@ -9,17 +9,19 @@ import {
     EyeIcon,
     PencilIcon,
     HomeIcon,
+    ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Dashboard() {
     const { auth, stats } = usePage().props;
+    console.log("stats", stats);
 
-    // Mock stats for now - in real app these would come from the controller
-    const mockStats = {
-        totalOrders: 127,
-        totalRevenue: 3420.5,
-        totalCustomers: 89,
-        pendingOrders: 8,
+    // Use stats provided by the controller; apply safe defaults so view won't crash
+    const statsData = {
+        totalOrders: 0,
+        totalRevenue: 0.0,
+        totalCustomers: 0,
+        pendingOrders: 0,
         ...stats,
     };
 
@@ -52,6 +54,13 @@ export default function Dashboard() {
                                 <ChartBarIcon className="h-5 w-5 inline mr-2" />
                                 Reports
                             </Link>
+                            <Link
+                                href={route("owner.orders")}
+                                className="py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm"
+                            >
+                                <ClipboardDocumentListIcon className="h-5 w-5 inline mr-2" />
+                                Order List
+                            </Link>
                         </nav>
                     </div>
 
@@ -82,7 +91,7 @@ export default function Dashboard() {
                                                 Total Orders
                                             </dt>
                                             <dd className="text-lg font-medium text-gray-900">
-                                                {mockStats.totalOrders}
+                                                {statsData.totalOrders}
                                             </dd>
                                         </dl>
                                     </div>
@@ -103,7 +112,7 @@ export default function Dashboard() {
                                             </dt>
                                             <dd className="text-lg font-medium text-gray-900">
                                                 $
-                                                {mockStats.totalRevenue.toFixed(
+                                                {statsData.totalRevenue.toFixed(
                                                     2
                                                 )}
                                             </dd>
@@ -125,7 +134,7 @@ export default function Dashboard() {
                                                 Customers
                                             </dt>
                                             <dd className="text-lg font-medium text-gray-900">
-                                                {mockStats.totalCustomers}
+                                                {statsData.totalCustomers}
                                             </dd>
                                         </dl>
                                     </div>
@@ -145,7 +154,7 @@ export default function Dashboard() {
                                                 Pending Orders
                                             </dt>
                                             <dd className="text-lg font-medium text-gray-900">
-                                                {mockStats.pendingOrders}
+                                                {statsData.pendingOrders}
                                             </dd>
                                         </dl>
                                     </div>

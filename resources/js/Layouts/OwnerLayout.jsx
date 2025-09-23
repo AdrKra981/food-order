@@ -248,6 +248,11 @@ export default function OwnerLayout({ header, children }) {
                                         Profile
                                     </Dropdown.Link>
                                     <Dropdown.Link
+                                        href={route("owner.dashboard")}
+                                    >
+                                        Restaurant Panel
+                                    </Dropdown.Link>
+                                    <Dropdown.Link
                                         href={route("logout")}
                                         method="post"
                                         as="button"

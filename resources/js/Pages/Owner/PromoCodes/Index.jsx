@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Head } from "@inertiajs/react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import OwnerLayout from "@/Layouts/OwnerLayout";
 import {
     PlusIcon,
     TagIcon,
@@ -83,7 +83,16 @@ export default function Index({ auth, promoCodes }) {
     };
 
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <OwnerLayout
+            header={
+                <div className="flex items-center">
+                    <TagIcon className="h-6 w-6 text-indigo-600 mr-2" />
+                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                        Promo Codes
+                    </h2>
+                </div>
+            }
+        >
             <Head title="Promo Codes" />
 
             <div className="py-12">
@@ -273,6 +282,6 @@ export default function Index({ auth, promoCodes }) {
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </OwnerLayout>
     );
 }
