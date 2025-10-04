@@ -4,6 +4,7 @@ import { FullPageLoader } from "@/Components/LoadingSpinner";
 import FoodieGoLogo from "@/Components/FoodieGoLogo";
 import { Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
+import useTrans from "@/Hooks/useTrans";
 
 export default function AuthenticatedLayout({ header, children }) {
     const pageProps = usePage().props;
@@ -14,9 +15,11 @@ export default function AuthenticatedLayout({ header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
+    const { t } = useTrans();
+
     // Don't render if user is not loaded yet
     if (!user) {
-        return <FullPageLoader text="Loading your dashboard..." />;
+        return <FullPageLoader text={t("loading_dashboard")} />;
     }
 
     return (
@@ -37,7 +40,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         href={route("admin.dashboard")}
                                         className="text-sm text-gray-600 hover:underline"
                                     >
-                                        Admin Panel
+                                        {t("admin_dashboard")}
                                     </Link>
                                 )}
                             </div>
@@ -74,7 +77,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                         <Dropdown.Link
                                             href={route("profile.edit")}
                                         >
-                                            Profile
+                                            {t("profile_settings")}
                                         </Dropdown.Link>
                                         {user?.role === "ADMIN" && (
                                             <Dropdown.Link
@@ -96,7 +99,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                                     "owner.dashboard"
                                                 )}
                                             >
-                                                Restaurant Dashboard
+                                                {t("restaurant_dashboard")}
                                             </Dropdown.Link>
                                         )}
 
@@ -107,7 +110,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                                     "orders"
                                                 )}
                                             >
-                                                My Orders
+                                                {t("my_orders")}
                                             </Dropdown.Link>
                                         )}
 
@@ -118,7 +121,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                             method="post"
                                             as="button"
                                         >
-                                            Log Out
+                                            {t("sign_out")}
                                         </Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>

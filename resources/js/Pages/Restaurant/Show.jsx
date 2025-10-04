@@ -1,8 +1,11 @@
 import { Head, Link } from "@inertiajs/react";
 import CartIcon from "@/Components/CartIcon";
 import AddToCartButton from "@/Components/AddToCartButton";
+import useTrans from "@/Hooks/useTrans";
 
 export default function RestaurantShow({ restaurant }) {
+    const { t } = useTrans();
+
     return (
         <>
             <Head title={restaurant.name} />
@@ -62,13 +65,13 @@ export default function RestaurantShow({ restaurant }) {
                             <div>
                                 <div className="bg-gray-50 p-6 rounded-lg">
                                     <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                                        Restaurant Info
+                                        {t("restaurant_info")}
                                     </h2>
 
                                     <div className="space-y-3 text-sm">
                                         <div className="flex items-center">
                                             <span className="font-medium text-gray-700 w-20">
-                                                Cuisine:
+                                                {t("cuisine")}
                                             </span>
                                             <span className="text-gray-600">
                                                 {restaurant.cuisine_type}
@@ -77,7 +80,7 @@ export default function RestaurantShow({ restaurant }) {
 
                                         <div className="flex items-center">
                                             <span className="font-medium text-gray-700 w-20">
-                                                Location:
+                                                {t("location")}
                                             </span>
                                             <span className="text-gray-600">
                                                 {restaurant.city},{" "}
@@ -87,7 +90,7 @@ export default function RestaurantShow({ restaurant }) {
 
                                         <div className="flex items-center">
                                             <span className="font-medium text-gray-700 w-20">
-                                                Phone:
+                                                {t("phone")}
                                             </span>
                                             <span className="text-gray-600">
                                                 {restaurant.phone_number}
@@ -96,19 +99,19 @@ export default function RestaurantShow({ restaurant }) {
 
                                         <div className="flex items-center">
                                             <span className="font-medium text-gray-700 w-20">
-                                                Hours:
+                                                {t("hours")}
                                             </span>
                                             <span className="text-gray-600">
                                                 {restaurant.opening_hours &&
                                                 restaurant.closing_hours
                                                     ? `${restaurant.opening_hours} - ${restaurant.closing_hours}`
-                                                    : "Hours not available"}
+                                                    : t("hours_not_available")}
                                             </span>
                                         </div>
 
                                         <div className="flex items-center">
                                             <span className="font-medium text-gray-700 w-20">
-                                                Delivery:
+                                                {t("delivery")}
                                             </span>
                                             <span className="text-gray-600">
                                                 $
@@ -119,7 +122,7 @@ export default function RestaurantShow({ restaurant }) {
 
                                         <div className="flex items-center">
                                             <span className="font-medium text-gray-700 w-20">
-                                                Minimum:
+                                                {t("minimum")}
                                             </span>
                                             <span className="text-gray-600">
                                                 ${restaurant.minimum_order || 0}

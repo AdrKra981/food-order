@@ -2,6 +2,7 @@ import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
 import { FullPageLoader } from "@/Components/LoadingSpinner";
 import { Link, usePage } from "@inertiajs/react";
+import useTrans from "@/Hooks/useTrans";
 import { useState } from "react";
 import {
     HomeIcon,
@@ -24,56 +25,66 @@ export default function OwnerLayout({ header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
+    const { t } = useTrans();
+
     // Don't render if user is not loaded yet
     if (!user) {
-        return <FullPageLoader text="Loading your restaurant dashboard..." />;
+        return <FullPageLoader text={t("loading_dashboard")} />;
     }
 
     const navigation = [
         {
             name: "Dashboard",
+            i18n: "restaurant_dashboard",
             href: route("owner.dashboard"),
             icon: HomeIcon,
             current: route().current("owner.dashboard"),
         },
         {
             name: "Restaurant Settings",
+            i18n: "restaurant_settings",
             href: route("owner.restaurant.edit"),
             icon: BuildingStorefrontIcon,
             current: route().current("owner.restaurant.*"),
         },
         {
             name: "Menu Categories",
+            i18n: "menu_categories",
             href: route("owner.menu-categories.index"),
             icon: DocumentTextIcon,
             current: route().current("owner.menu-categories.*"),
         },
         {
             name: "Menu Items",
+            i18n: "menu_items",
             href: route("owner.menu-items.index"),
             icon: ClipboardDocumentListIcon,
             current: route().current("owner.menu-items.*"),
         },
         {
             name: "Promo Codes",
+            i18n: "promo_codes",
             href: route("owner.promo-codes.index"),
             icon: TagIcon,
             current: route().current("owner.promo-codes.*"),
         },
         {
             name: "Orders",
+            i18n: "orders",
             href: route("owner.orders"),
             icon: ShoppingBagIcon,
             current: route().current("owner.orders*"),
         },
         {
             name: "Media Library",
+            i18n: "media_library",
             href: route("owner.media.index"),
             icon: PhotoIcon,
             current: route().current("owner.media.*"),
         },
         {
             name: "Reports",
+            i18n: "reports",
             href: route("owner.reports"),
             icon: ChartBarIcon,
             current: route().current("owner.reports"),
@@ -98,7 +109,7 @@ export default function OwnerLayout({ header, children }) {
                             <div className="flex items-center">
                                 <ApplicationLogo className="h-8 w-auto text-white" />
                                 <span className="ml-2 text-white font-semibold">
-                                    Restaurant Panel
+                                    {t("restaurant_panel")}
                                 </span>
                             </div>
                             <button
@@ -144,7 +155,7 @@ export default function OwnerLayout({ header, children }) {
                     <div className="flex h-16 flex-shrink-0 items-center px-4 bg-indigo-600">
                         <ApplicationLogo className="h-8 w-auto text-white" />
                         <span className="ml-2 text-white font-semibold">
-                            Restaurant Panel
+                            {t("restaurant_panel")}
                         </span>
                     </div>
                     <div className="flex flex-1 flex-col overflow-y-auto">
@@ -166,7 +177,7 @@ export default function OwnerLayout({ header, children }) {
                                                 : "text-gray-400 group-hover:text-gray-500"
                                         }`}
                                     />
-                                    {item.name}
+                                    {t(item.i18n)}
                                 </Link>
                             ))}
                         </nav>

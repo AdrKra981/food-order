@@ -4,6 +4,7 @@ import LocationIQAutocomplete from "@/Components/LocationIQAutocomplete";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Head, Link } from "@inertiajs/react";
 import { useState } from "react";
+import useTrans from "@/Hooks/useTrans";
 
 export default function Welcome({
     auth,
@@ -11,6 +12,7 @@ export default function Welcome({
     searchAddress,
     locationiqApiKey,
 }) {
+    const { t } = useTrans();
     const [address, setAddress] = useState(searchAddress || "");
     const [coordinates, setCoordinates] = useState(null);
     const [selectedCuisine, setSelectedCuisine] = useState("all");
@@ -154,7 +156,7 @@ export default function Welcome({
                                         onClick={handleSearch}
                                         className="bg-orange-700 hover:bg-orange-800 px-6 py-3 rounded-r-lg font-medium transition duration-150 ease-in-out"
                                     >
-                                        Find Food
+                                        {t("find_food")}
                                     </button>
                                 </div>
                             </div>
@@ -167,7 +169,7 @@ export default function Welcome({
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center mb-12">
                             <h3 className="text-3xl font-bold text-gray-900 mb-4">
-                                Featured Restaurants
+                                {t("featured_restaurants")}
                             </h3>
                             <p className="text-lg text-gray-600">
                                 Discover amazing food from the best restaurants
@@ -183,7 +185,7 @@ export default function Welcome({
                                         htmlFor="cuisine-filter"
                                         className="text-sm font-medium text-gray-700"
                                     >
-                                        Filter by cuisine:
+                                        {t("filter_by_cuisine")}
                                     </label>
                                     <div className="relative">
                                         <select
@@ -202,7 +204,7 @@ export default function Welcome({
                                                     value={cuisine}
                                                 >
                                                     {cuisine === "all"
-                                                        ? "All Cuisines"
+                                                        ? t("all_cuisines")
                                                         : cuisine}
                                                 </option>
                                             ))}
@@ -295,7 +297,9 @@ export default function Welcome({
                                                     {restaurant.opening_hours &&
                                                     restaurant.closing_hours
                                                         ? `${restaurant.opening_hours} - ${restaurant.closing_hours}`
-                                                        : "Hours not available"}
+                                                        : t(
+                                                              "hours_not_available"
+                                                          )}
                                                 </div>
 
                                                 <div className="flex items-center justify-between">

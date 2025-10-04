@@ -1,6 +1,8 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import { useState } from "react";
+import ConfirmModal from "@/Components/ConfirmModal";
+import useTrans from "@/Hooks/useTrans";
 import {
     BuildingStorefrontIcon,
     MagnifyingGlassIcon,
@@ -24,28 +26,40 @@ export default function AdminRestaurants({ restaurants, filters }) {
         });
     };
 
+    const { t } = useTrans();
+
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [confirmAction, setConfirmAction] = useState(null); // 'toggle'|'delete'
+    const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+
     const toggleRestaurantStatus = (restaurant) => {
-        if (
-            confirm(
-                `Are you sure you want to ${
-                    restaurant.is_accepted ? "deactivate" : "activate"
-                } this restaurant?`
-            )
-        ) {
-            router.post(
-                route("admin.restaurants.toggle-status", restaurant.id)
-            );
-        }
+        setSelectedRestaurant(restaurant);
+        setConfirmAction("toggle");
+        setConfirmOpen(true);
     };
 
     const deleteRestaurant = (restaurant) => {
-        if (
-            confirm(
-                `Are you sure you want to delete "${restaurant.name}"? This action cannot be undone.`
-            )
-        ) {
-            router.delete(route("admin.restaurants.delete", restaurant.id));
+        setSelectedRestaurant(restaurant);
+        setConfirmAction("delete");
+        setConfirmOpen(true);
+    };
+
+    const handleConfirm = () => {
+        if (!selectedRestaurant) return;
+
+        if (confirmAction === "toggle") {
+            router.post(
+                route("admin.restaurants.toggle-status", selectedRestaurant.id)
+            );
+        } else if (confirmAction === "delete") {
+            router.delete(
+                route("admin.restaurants.delete", selectedRestaurant.id)
+            );
         }
+
+        setConfirmOpen(false);
+        setSelectedRestaurant(null);
+        setConfirmAction(null);
     };
 
     return (
@@ -54,18 +68,18 @@ export default function AdminRestaurants({ restaurants, filters }) {
             header={
                 <div className="flex justify-between items-center">
                     <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                        Restaurant Management
+                        {t("restaurant_management")}
                     </h2>
                     <Link
                         href={route("admin.dashboard")}
                         className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium"
                     >
-                        Back to Dashboard
+                        {t("back_to_dashboard")}
                     </Link>
                 </div>
             }
         >
-            <Head title="Restaurant Management" />
+            <Head title={t("restaurant_management")} />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -258,8 +272,10 @@ export default function AdminRestaurants({ restaurants, filters }) {
                                                         }`}
                                                         title={
                                                             restaurant.is_accepted
-                                                                ? "Deactivate"
-                                                                : "Activate"
+                                                                ? t(
+                                                                      "deactivate"
+                                                                  )
+                                                                : t("activate")
                                                         }
                                                     >
                                                         <PowerIcon className="h-4 w-4" />
@@ -271,7 +287,7 @@ export default function AdminRestaurants({ restaurants, filters }) {
                                                             )
                                                         }
                                                         className="text-red-600 hover:text-red-900 p-1 rounded"
-                                                        title="Delete Restaurant"
+                                                        title={t("delete")}
                                                     >
                                                         <TrashIcon className="h-4 w-4" />
                                                     </button>
@@ -318,6 +334,46 @@ export default function AdminRestaurants({ restaurants, filters }) {
                     </div>
                 </div>
             </div>
+
+            <ConfirmModal
+                open={confirmOpen}
+                title={
+                    confirmAction === "delete"
+                        ? selectedRestaurant
+                            ? `Delete ${selectedRestaurant.name}`
+                            : "Delete Restaurant"
+                        : selectedRestaurant
+                        ? `${
+                              selectedRestaurant.is_accepted
+                                  ? "Deactivate"
+                                  : "Activate"
+                          } ${selectedRestaurant.name}`
+                        : "Confirm"
+                }
+                message={
+                    confirmAction === "delete"
+                        ? selectedRestaurant
+                            ? `Are you sure you want to delete "${selectedRestaurant.name}"? This action cannot be undone.`
+                            : ""
+                        : selectedRestaurant
+                        ? `Are you sure you want to ${
+                              selectedRestaurant.is_accepted
+                                  ? "deactivate"
+                                  : "activate"
+                          } "${selectedRestaurant.name}"?`
+                        : ""
+                }
+                confirmText={
+                    confirmAction === "delete"
+                        ? "Delete"
+                        : selectedRestaurant && selectedRestaurant.is_accepted
+                        ? "Deactivate"
+                        : "Activate"
+                }
+                cancelText={"Cancel"}
+                onConfirm={handleConfirm}
+                onCancel={() => setConfirmOpen(false)}
+            />
         </AuthenticatedLayout>
     );
 }

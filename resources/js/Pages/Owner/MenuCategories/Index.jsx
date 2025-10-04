@@ -2,6 +2,7 @@ import OwnerLayout from "@/Layouts/OwnerLayout";
 import { Head, Link, usePage, router } from "@inertiajs/react";
 import { useState } from "react";
 import { ConfirmationModal, AlertModal } from "@/Components/ConfirmationModal";
+import useTrans from "@/Hooks/useTrans";
 import {
     DocumentTextIcon,
     PlusIcon,
@@ -18,6 +19,7 @@ export default function Index() {
     const [showConfirm, setShowConfirm] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const { t } = useTrans();
 
     const getPriorityBadge = (priority) => {
         switch (priority) {
@@ -125,7 +127,7 @@ export default function Index() {
                     <div className="flex items-center">
                         <DocumentTextIcon className="h-6 w-6 text-gray-400 mr-2" />
                         <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                            Menu Categories
+                            {t("menu_categories")}
                         </h2>
                     </div>
                     <Link
@@ -133,12 +135,12 @@ export default function Index() {
                         className="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 transition ease-in-out duration-150"
                     >
                         <PlusIcon className="h-4 w-4 mr-2" />
-                        Add Category
+                        {t("add_category")}
                     </Link>
                 </div>
             }
         >
-            <Head title="Menu Categories" />
+            <Head title={t("menu_categories")} />
 
             <div className="py-6">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -163,7 +165,9 @@ export default function Index() {
                                                         </h3>
                                                         {!category.is_available && (
                                                             <span className="text-xs px-2 py-1 bg-red-100 text-red-800 rounded-full">
-                                                                Unavailable
+                                                                {t(
+                                                                    "unavailable"
+                                                                )}
                                                             </span>
                                                         )}
                                                     </div>
@@ -187,13 +191,17 @@ export default function Index() {
                                                         }`}
                                                         title={
                                                             category.is_available
-                                                                ? "Mark as unavailable"
-                                                                : "Mark as available"
+                                                                ? t(
+                                                                      "mark_as_unavailable"
+                                                                  )
+                                                                : t(
+                                                                      "mark_as_available"
+                                                                  )
                                                         }
                                                     >
                                                         {category.is_available
-                                                            ? "Available"
-                                                            : "Unavailable"}
+                                                            ? t("available")
+                                                            : t("unavailable")}
                                                     </button>
                                                     <Link
                                                         href={route(
@@ -243,11 +251,10 @@ export default function Index() {
                             <div className="px-4 py-8 sm:px-6 text-center">
                                 <DocumentTextIcon className="mx-auto h-12 w-12 text-gray-400" />
                                 <h3 className="mt-2 text-sm font-medium text-gray-900">
-                                    No menu categories
+                                    {t("no_menu_categories")}
                                 </h3>
                                 <p className="mt-1 text-sm text-gray-500">
-                                    Get started by creating your first menu
-                                    category.
+                                    {t("create_first_category")}
                                 </p>
                                 <div className="mt-6">
                                     <Link
@@ -257,7 +264,7 @@ export default function Index() {
                                         className="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 transition ease-in-out duration-150"
                                     >
                                         <PlusIcon className="h-4 w-4 mr-2" />
-                                        Add Category
+                                        {t("add_category")}
                                     </Link>
                                 </div>
                             </div>
@@ -270,14 +277,17 @@ export default function Index() {
             <AlertModal
                 isOpen={showAlert}
                 onClose={closeAlert}
-                title="Cannot Delete Category"
+                title={t("cannot_delete_category_title")}
                 message={
                     selectedCategory
-                        ? `Cannot delete "${selectedCategory.name}" because it contains ${selectedCategory.menu_items_count} menu items. Please remove all items from this category first.`
+                        ? t("cannot_delete_category_message", {
+                              name: selectedCategory.name,
+                              count: selectedCategory.menu_items_count,
+                          })
                         : ""
                 }
                 type="error"
-                buttonText="Got it"
+                buttonText={t("got_it")}
             />
 
             {/* Confirmation Modal for delete */}
@@ -285,14 +295,14 @@ export default function Index() {
                 isOpen={showConfirm}
                 onClose={closeConfirm}
                 onConfirm={confirmDelete}
-                title="Delete Category"
+                title={t("delete_category_title")}
                 message={
                     selectedCategory
-                        ? `Are you sure you want to delete "${selectedCategory.name}"? This action cannot be undone.`
+                        ? t("delete_category_message", {
+                              name: selectedCategory.name,
+                          })
                         : ""
                 }
-                confirmText="Delete"
-                cancelText="Cancel"
                 type="danger"
                 isLoading={isDeleting}
             />

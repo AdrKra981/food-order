@@ -1,5 +1,8 @@
 import OwnerLayout from "@/Layouts/OwnerLayout";
 import { Head, Link, usePage, router } from "@inertiajs/react";
+import { useState } from "react";
+import ConfirmModal from "@/Components/ConfirmModal";
+import useTrans from "@/Hooks/useTrans";
 import {
     DocumentTextIcon,
     PlusIcon,
@@ -14,10 +17,25 @@ import {
 export default function Index() {
     const { menuItems } = usePage().props;
 
-    const handleDelete = (id) => {
-        if (confirm("Are you sure you want to delete this menu item?")) {
-            router.delete(route("owner.menu-items.destroy", id));
+    const { t } = useTrans();
+
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [pendingDeleteId, setPendingDeleteId] = useState(null);
+    const [pendingDeleteName, setPendingDeleteName] = useState(null);
+
+    const handleDelete = (id, name) => {
+        setPendingDeleteId(id);
+        setPendingDeleteName(name || null);
+        setConfirmOpen(true);
+    };
+
+    const confirmDelete = () => {
+        if (pendingDeleteId) {
+            router.delete(route("owner.menu-items.destroy", pendingDeleteId));
         }
+        setConfirmOpen(false);
+        setPendingDeleteId(null);
+        setPendingDeleteName(null);
     };
 
     const getPriorityBadge = (priority) => {
@@ -58,7 +76,7 @@ export default function Index() {
                     <div className="flex items-center gap-4">
                         <DocumentTextIcon className="h-6 w-6 text-gray-400 mr-2" />
                         <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                            Menu Items
+                            {t("menu_items")}
                         </h2>
                     </div>
                     <Link
@@ -66,12 +84,12 @@ export default function Index() {
                         className="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 transition ease-in-out duration-150"
                     >
                         <PlusIcon className="h-4 w-4 mr-2" />
-                        Add Item
+                        {t("add_item")}
                     </Link>
                 </div>
             }
         >
-            <Head title="Menu Items" />
+            <Head title={t("menu_items")} />
 
             <div className="py-6">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -156,8 +174,8 @@ export default function Index() {
                                                         }
                                                     >
                                                         {item.is_available
-                                                            ? "Available"
-                                                            : "Unavailable"}
+                                                            ? t("available")
+                                                            : t("unavailable")}
                                                     </button>
                                                     <Link
                                                         href={route(
@@ -165,18 +183,19 @@ export default function Index() {
                                                             item.id
                                                         )}
                                                         className="text-indigo-600 hover:text-indigo-900"
-                                                        title="Edit item"
+                                                        title={t("edit_item")}
                                                     >
                                                         <PencilIcon className="h-4 w-4" />
                                                     </Link>
                                                     <button
                                                         onClick={() =>
                                                             handleDelete(
-                                                                item.id
+                                                                item.id,
+                                                                item.name
                                                             )
                                                         }
                                                         className="text-red-600 hover:text-red-900"
-                                                        title="Delete item"
+                                                        title={t("delete_item")}
                                                     >
                                                         <TrashIcon className="h-4 w-4" />
                                                     </button>
@@ -205,11 +224,10 @@ export default function Index() {
                             <div className="px-4 py-8 sm:px-6 text-center">
                                 <DocumentTextIcon className="mx-auto h-12 w-12 text-gray-400" />
                                 <h3 className="mt-2 text-sm font-medium text-gray-900">
-                                    No menu items
+                                    {t("no_menu_items")}
                                 </h3>
                                 <p className="mt-1 text-sm text-gray-500">
-                                    Get started by creating your first menu
-                                    item.
+                                    {t("create_first_item")}
                                 </p>
                                 <div className="mt-6">
                                     <Link
@@ -217,7 +235,7 @@ export default function Index() {
                                         className="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 transition ease-in-out duration-150"
                                     >
                                         <PlusIcon className="h-4 w-4 mr-2" />
-                                        Add Item
+                                        {t("add_item")}
                                     </Link>
                                 </div>
                             </div>
@@ -226,5 +244,24 @@ export default function Index() {
                 </div>
             </div>
         </OwnerLayout>
+    );
+}
+
+// Confirm modal rendered at module bottom to avoid interrupting JSX above
+export function ConfirmModalWrapper({ open, onClose, onConfirm, name }) {
+    return (
+        <ConfirmModal
+            open={open}
+            title={name ? `Delete ${name}` : "Delete item"}
+            message={
+                name
+                    ? `Are you sure you want to delete "${name}"? This action cannot be undone.`
+                    : "Are you sure you want to delete this item?"
+            }
+            confirmText={"Delete"}
+            cancelText={"Cancel"}
+            onConfirm={onConfirm}
+            onCancel={onClose}
+        />
     );
 }

@@ -29,6 +29,9 @@ use Inertia\Inertia;
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/restaurant/{restaurant}', [HomeController::class, 'show'])->name('restaurant.show');
 
+// Locale switch endpoint (stores chosen locale in session)
+Route::post('/locale', [App\Http\Controllers\LocaleController::class, 'store'])->name('locale.store');
+
 // Debug route to test CSRF token
 Route::post('/api/test-csrf', function () {
     return response()->json(['message' => 'CSRF token is working!', 'timestamp' => now()]);

@@ -1,5 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
+import useTrans from "@/Hooks/useTrans";
 import {
     UserGroupIcon,
     BuildingStorefrontIcon,
@@ -82,16 +83,18 @@ export default function AdminDashboard({
         },
     ];
 
+    const { t } = useTrans();
+
     return (
         <AuthenticatedLayout
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                    Admin Dashboard
+                    {t("admin_dashboard_title")}
                 </h2>
             }
         >
-            <Head title="Admin Dashboard" />
+            <Head title={t("admin_dashboard_title")} />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">

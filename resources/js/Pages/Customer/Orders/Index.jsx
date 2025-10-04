@@ -1,5 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
+import useTrans from "@/Hooks/useTrans";
 import { useState } from "react";
 import {
     ClockIcon,
@@ -84,18 +85,20 @@ export default function Index({ orders }) {
         }
     };
 
+    const { t } = useTrans();
+
     return (
         <AuthenticatedLayout
             header={
                 <div className="flex items-center">
                     <ShoppingBagIcon className="h-6 w-6 text-gray-400 mr-2" />
                     <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                        My Orders
+                        {t("my_orders_title")}
                     </h2>
                 </div>
             }
         >
-            <Head title="My Orders" />
+            <Head title={t("my_orders_title")} />
 
             <div className="py-6">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">

@@ -1,6 +1,7 @@
 import { useForm } from "@inertiajs/react";
 import OwnerLayout from "../../../Layouts/OwnerLayout";
 import MediaSelector from "../../../Components/MediaSelector";
+import useTrans from "../../../Hooks/useTrans";
 
 export default function Create({ categories, media }) {
     const { data, setData, post, processing, errors } = useForm({
@@ -22,13 +23,15 @@ export default function Create({ categories, media }) {
         setData("media_id", media ? media.id : null);
     };
 
+    const { t } = useTrans();
+
     return (
-        <OwnerLayout title="Create Menu Item">
+        <OwnerLayout title={t("add_item")}>
             <div className="max-w-2xl mx-auto">
                 <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div className="p-6">
                         <h1 className="text-2xl font-bold text-gray-900 mb-6">
-                            Create Menu Item
+                            {t("add_item")}
                         </h1>
 
                         <form onSubmit={handleSubmit} className="space-y-6">
@@ -37,7 +40,7 @@ export default function Create({ categories, media }) {
                                     htmlFor="name"
                                     className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    Name
+                                    {t("name")}
                                 </label>
                                 <input
                                     id="name"
@@ -61,7 +64,7 @@ export default function Create({ categories, media }) {
                                     htmlFor="description"
                                     className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    Description
+                                    {t("description")}
                                 </label>
                                 <textarea
                                     id="description"
@@ -84,7 +87,7 @@ export default function Create({ categories, media }) {
                                     htmlFor="price"
                                     className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    Price
+                                    {t("price")}
                                 </label>
                                 <input
                                     id="price"
@@ -106,7 +109,7 @@ export default function Create({ categories, media }) {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Image
+                                    {t("image")}
                                 </label>
                                 <MediaSelector
                                     value={null}
@@ -125,7 +128,7 @@ export default function Create({ categories, media }) {
                                     htmlFor="menu_category_id"
                                     className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    Category
+                                    {t("category")}
                                 </label>
                                 <select
                                     id="menu_category_id"
@@ -139,7 +142,9 @@ export default function Create({ categories, media }) {
                                     className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                     required
                                 >
-                                    <option value="">Select a category</option>
+                                    <option value="">
+                                        {t("select_category")}
+                                    </option>
                                     {categories.map((category) => (
                                         <option
                                             key={category.id}
@@ -161,7 +166,7 @@ export default function Create({ categories, media }) {
                                     htmlFor="priority"
                                     className="block text-sm font-medium text-gray-700 mb-2"
                                 >
-                                    Priority Level
+                                    {t("priority_level")}
                                 </label>
                                 <select
                                     id="priority"
@@ -174,10 +179,18 @@ export default function Create({ categories, media }) {
                                     }
                                     className="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 >
-                                    <option value={0}>Normal</option>
-                                    <option value={1}>Featured</option>
-                                    <option value={2}>Promoted</option>
-                                    <option value={3}>Chef's Special</option>
+                                    <option value={0}>
+                                        {t("priority_normal")}
+                                    </option>
+                                    <option value={1}>
+                                        {t("priority_featured")}
+                                    </option>
+                                    <option value={2}>
+                                        {t("priority_promoted")}
+                                    </option>
+                                    <option value={3}>
+                                        {t("priority_chef_special")}
+                                    </option>
                                 </select>
                                 {errors.priority && (
                                     <div className="text-red-500 text-sm mt-1">
@@ -200,7 +213,7 @@ export default function Create({ categories, media }) {
                                         className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                     />
                                     <span className="ml-2 text-sm text-gray-700">
-                                        Item is available for ordering
+                                        {t("item_available_for_ordering")}
                                     </span>
                                 </label>
                                 {errors.is_available && (
@@ -215,7 +228,7 @@ export default function Create({ categories, media }) {
                                     href={route("owner.menu-items.index")}
                                     className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
                                 >
-                                    Cancel
+                                    {t("cancel")}
                                 </a>
                                 <button
                                     type="submit"
@@ -223,8 +236,8 @@ export default function Create({ categories, media }) {
                                     disabled={processing}
                                 >
                                     {processing
-                                        ? "Creating..."
-                                        : "Create Menu Item"}
+                                        ? t("processing")
+                                        : t("add_item")}
                                 </button>
                             </div>
                         </form>

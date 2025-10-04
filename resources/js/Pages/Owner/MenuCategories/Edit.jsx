@@ -1,8 +1,10 @@
 import OwnerLayout from "@/Layouts/OwnerLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
+import useTrans from "@/Hooks/useTrans";
 import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/24/outline";
 
 export default function Edit({ category }) {
+    const { t } = useTrans();
     const { data, setData, put, processing, errors } = useForm({
         name: category.name || "",
         description: category.description || "",
@@ -29,13 +31,13 @@ export default function Edit({ category }) {
                         </Link>
                         <PencilIcon className="h-6 w-6 text-gray-400 mr-2" />
                         <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                            Edit Menu Category
+                            {t("edit_menu_category_title")}
                         </h2>
                     </div>
                 </div>
             }
         >
-            <Head title="Edit Menu Category" />
+            <Head title={t("edit_menu_category_title")} />
 
             <div className="py-6">
                 <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

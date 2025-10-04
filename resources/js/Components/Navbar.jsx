@@ -1,12 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import { router, usePage } from "@inertiajs/react";
+import useTrans from "@/Hooks/useTrans";
 import { UserIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import FoodieGoLogo from "./FoodieGoLogo";
 
 export default function Navbar() {
     const { auth } = usePage().props;
+    const { t } = useTrans();
     const [showUserMenu, setShowUserMenu] = useState(false);
     const dropdownRef = useRef(null);
+    const [locale, setLocale] = useState(
+        (usePage().props.lang && usePage().props.lang.locale) || "en"
+    );
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -66,7 +71,7 @@ export default function Navbar() {
                                             }}
                                             className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                         >
-                                            Profile Settings
+                                            {t("profile_settings")}
                                         </button>
                                         <button
                                             onClick={() => {
@@ -75,7 +80,7 @@ export default function Navbar() {
                                             }}
                                             className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                         >
-                                            My Orders
+                                            {t("my_orders")}
                                         </button>
                                         {auth.user.role === "OWNER" && (
                                             <button
@@ -87,7 +92,7 @@ export default function Navbar() {
                                                 }}
                                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                             >
-                                                Restaurant Dashboard
+                                                {t("restaurant_dashboard")}
                                             </button>
                                         )}
                                         {auth.user.role === "ADMIN" && (
@@ -100,7 +105,7 @@ export default function Navbar() {
                                                 }}
                                                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                             >
-                                                Admin Dashboard
+                                                {t("admin_dashboard")}
                                             </button>
                                         )}
                                         <hr className="my-1" />
@@ -111,7 +116,7 @@ export default function Navbar() {
                                             }}
                                             className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
                                         >
-                                            Sign Out
+                                            {t("sign_out")}
                                         </button>
                                     </div>
                                 )}
@@ -122,14 +127,44 @@ export default function Navbar() {
                                     onClick={() => router.visit("/login")}
                                     className="text-gray-700 hover:text-orange-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                                 >
-                                    Log In
+                                    {t("login")}
                                 </button>
                                 <button
                                     onClick={() => router.visit("/register")}
                                     className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                                 >
-                                    Register
+                                    {t("register")}
                                 </button>
+                                {/* Locale selector */}
+                                <select
+                                    value={locale}
+                                    onChange={async (e) => {
+                                        const newLocale = e.target.value;
+                                        setLocale(newLocale);
+                                        // POST to /locale to persist
+                                        await fetch(route("locale.store"), {
+                                            method: "POST",
+                                            headers: {
+                                                "Content-Type":
+                                                    "application/json",
+                                                "X-CSRF-TOKEN": document
+                                                    .querySelector(
+                                                        'meta[name="csrf-token"]'
+                                                    )
+                                                    .getAttribute("content"),
+                                            },
+                                            body: JSON.stringify({
+                                                locale: newLocale,
+                                            }),
+                                        });
+                                        // Reload to apply locale changes
+                                        window.location.reload();
+                                    }}
+                                    className="ml-2 border-gray-200 rounded-md text-sm"
+                                >
+                                    <option value="en">EN</option>
+                                    <option value="pl">PL</option>
+                                </select>
                             </div>
                         )}
                     </div>
