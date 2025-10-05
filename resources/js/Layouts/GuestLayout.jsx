@@ -25,7 +25,9 @@ export default function GuestLayout({ children }) {
                             setLocale(newLocale);
                             await fetch(route("locale.store"), {
                                 method: "POST",
+                                credentials: "same-origin",
                                 headers: {
+                                    Accept: "application/json",
                                     "Content-Type": "application/json",
                                     "X-CSRF-TOKEN": document
                                         .querySelector(

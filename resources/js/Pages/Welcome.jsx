@@ -2,7 +2,7 @@ import CartIcon from "@/Components/CartIcon";
 import FoodieGoLogo from "@/Components/FoodieGoLogo";
 import LocationIQAutocomplete from "@/Components/LocationIQAutocomplete";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { useState } from "react";
 import useTrans from "@/Hooks/useTrans";
 
@@ -13,6 +13,8 @@ export default function Welcome({
     locationiqApiKey,
 }) {
     const { t } = useTrans();
+    const { lang } = usePage().props;
+    const [locale, setLocale] = useState((lang && lang.locale) || "en");
     const [address, setAddress] = useState(searchAddress || "");
     const [coordinates, setCoordinates] = useState(null);
     const [selectedCuisine, setSelectedCuisine] = useState("all");
@@ -72,7 +74,7 @@ export default function Welcome({
 
     return (
         <>
-            <Head title="Food Ordering Platform" />
+            <Head title={t("app_title")} />
             <div className="min-h-screen bg-gray-50">
                 {/* Header */}
                 <header className="bg-white shadow-sm">
@@ -111,14 +113,51 @@ export default function Welcome({
                                             href={route("login")}
                                             className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md font-medium"
                                         >
-                                            Log in
+                                            {t("login")}
                                         </Link>
                                         <Link
                                             href={route("register")}
                                             className="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-md font-medium transition duration-150 ease-in-out"
                                         >
-                                            Register
+                                            {t("register")}
                                         </Link>
+                                        <select
+                                            value={locale}
+                                            onChange={async (e) => {
+                                                const newLocale =
+                                                    e.target.value;
+                                                setLocale(newLocale);
+                                                await fetch(
+                                                    route("locale.store"),
+                                                    {
+                                                        method: "POST",
+                                                        credentials:
+                                                            "same-origin",
+                                                        headers: {
+                                                            Accept: "application/json",
+                                                            "Content-Type":
+                                                                "application/json",
+                                                            "X-CSRF-TOKEN":
+                                                                document
+                                                                    .querySelector(
+                                                                        'meta[name="csrf-token"]'
+                                                                    )
+                                                                    .getAttribute(
+                                                                        "content"
+                                                                    ),
+                                                        },
+                                                        body: JSON.stringify({
+                                                            locale: newLocale,
+                                                        }),
+                                                    }
+                                                );
+                                                window.location.reload();
+                                            }}
+                                            className="ml-2 border-gray-200 rounded-md text-sm"
+                                        >
+                                            <option value="en">EN</option>
+                                            <option value="pl">PL</option>
+                                        </select>
                                     </>
                                 )}
                             </nav>
@@ -131,13 +170,12 @@ export default function Welcome({
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
                         <div className="text-center">
                             <h2 className="text-4xl md:text-6xl font-bold mb-6">
-                                Delicious Food
+                                {t("hero_heading_line1")}
                                 <br />
-                                Delivered Fast
+                                {t("hero_heading_line2")}
                             </h2>
                             <p className="text-xl md:text-2xl mb-8 text-orange-100">
-                                Order from your favorite restaurants and get
-                                fresh food delivered to your door
+                                {t("hero_subtext")}
                             </p>
                             <div className="max-w-md mx-auto">
                                 <div className="flex">
@@ -145,7 +183,7 @@ export default function Welcome({
                                         value={address}
                                         onChange={setAddress}
                                         onPlaceSelect={handlePlaceSelect}
-                                        placeholder="Enter your address"
+                                        placeholder={t("search_placeholder")}
                                         apiKey={locationiqApiKey}
                                         countryCode="pl"
                                         className="flex-1"
@@ -172,8 +210,7 @@ export default function Welcome({
                                 {t("featured_restaurants")}
                             </h3>
                             <p className="text-lg text-gray-600">
-                                Discover amazing food from the best restaurants
-                                in your area
+                                {t("discover_restaurants")}
                             </p>
                         </div>
 
@@ -311,7 +348,7 @@ export default function Welcome({
                                                         >
                                                             <path d="M8 5a1 1 0 100 2h5.586l-1.293 1.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L13.586 5H8zM12 15a1 1 0 100-2H6.414l1.293-1.293a1 1 0 10-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L6.414 15H12z" />
                                                         </svg>
-                                                        Delivery:{" "}
+                                                        {t("delivery_label")}{" "}
                                                         {Number(
                                                             restaurant.delivery_fee ||
                                                                 0
@@ -319,10 +356,10 @@ export default function Welcome({
                                                             ? `${Number(
                                                                   restaurant.delivery_fee
                                                               ).toFixed(2)} zł`
-                                                            : "Free"}
+                                                            : t("free")}
                                                     </div>
                                                     <div className="text-xs">
-                                                        Min:{" "}
+                                                        {t("min_label")}{" "}
                                                         {restaurant.minimum_order
                                                             ? `${Number(
                                                                   restaurant.minimum_order
@@ -343,11 +380,11 @@ export default function Welcome({
                                                             clipRule="evenodd"
                                                         />
                                                     </svg>
-                                                    Delivery range:{" "}
+                                                    {t("delivery_range_label")}{" "}
                                                     {
                                                         restaurant.delivery_range_km
                                                     }{" "}
-                                                    km
+                                                    {t("km")}
                                                 </div>
                                             </div>
 
@@ -358,7 +395,7 @@ export default function Welcome({
                                                 )}
                                                 className="w-full mt-4 bg-orange-600 hover:bg-orange-700 text-white py-2 px-4 rounded-md font-medium transition duration-150 ease-in-out inline-block text-center"
                                             >
-                                                View Menu
+                                                {t("view_menu")}
                                             </Link>
                                         </div>
                                     </div>
@@ -378,12 +415,10 @@ export default function Welcome({
                                     />
                                 </svg>
                                 <h4 className="text-xl font-semibold text-gray-900 mb-2">
-                                    No Restaurants Found
+                                    {t("no_restaurants_found_title")}
                                 </h4>
                                 <p className="text-gray-600">
-                                    No restaurants match your selected cuisine
-                                    filter. Try selecting a different cuisine
-                                    type.
+                                    {t("no_restaurants_found_message")}
                                 </p>
                             </div>
                         ) : (
@@ -400,11 +435,10 @@ export default function Welcome({
                                     />
                                 </svg>
                                 <h4 className="text-xl font-semibold text-gray-900 mb-2">
-                                    No Restaurants Available
+                                    {t("no_restaurants_available_title")}
                                 </h4>
                                 <p className="text-gray-600">
-                                    We're working hard to bring amazing
-                                    restaurants to your area. Check back soon!
+                                    {t("no_restaurants_available_message")}
                                 </p>
                             </div>
                         )}
@@ -421,13 +455,12 @@ export default function Welcome({
                                     className="h-8 mb-4"
                                 />
                                 <p className="text-gray-400">
-                                    Your favorite food delivered fast and fresh
-                                    to your door.
+                                    {t("footer_tagline")}
                                 </p>
                             </div>
                         </div>
                         <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-                            <p>© 2025 FoodieGo. All rights reserved.</p>
+                            <p>{t("copyright")}</p>
                         </div>
                     </div>
                 </footer>

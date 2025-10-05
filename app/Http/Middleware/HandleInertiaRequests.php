@@ -30,6 +30,12 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        // Ensure the application locale is set from the session (session is available here)
+        $sessionLocale = $request->session()->get('locale');
+        if ($sessionLocale) {
+            app()->setLocale($sessionLocale);
+        }
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
