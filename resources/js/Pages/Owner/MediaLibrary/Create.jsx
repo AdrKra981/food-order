@@ -211,7 +211,7 @@ export default function MediaCreate() {
                                     href={route("owner.media.index")}
                                     className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors duration-200"
                                 >
-                                    Cancel
+                                    {t("cancel")}
                                 </Link>
                                 <button
                                     type="submit"
@@ -221,10 +221,12 @@ export default function MediaCreate() {
                                     className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium rounded-md transition-colors duration-200"
                                 >
                                     {processing
-                                        ? "Uploading..."
-                                        : `Upload ${data.files.length} Image${
-                                              data.files.length !== 1 ? "s" : ""
-                                          }`}
+                                        ? t("processing")
+                                        : `${t("upload")} ${
+                                              data.files.length
+                                          } ${t("image_plural", {
+                                              count: data.files.length,
+                                          })}`}
                                 </button>
                             </div>
                         </form>

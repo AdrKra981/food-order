@@ -1,5 +1,5 @@
 import { Head, Link } from "@inertiajs/react";
-import CartIcon from "@/Components/CartIcon";
+import Navbar from "@/Components/Navbar";
 import AddToCartButton from "@/Components/AddToCartButton";
 import useTrans from "@/Hooks/useTrans";
 
@@ -10,25 +10,25 @@ export default function RestaurantShow({ restaurant }) {
         <>
             <Head title={restaurant.name} />
             <div className="min-h-screen bg-gray-50">
-                {/* Header */}
-                <header className="bg-white shadow-sm">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex justify-between items-center py-6">
-                            <div className="flex items-center">
-                                <Link
-                                    href="/"
-                                    className="text-orange-600 hover:text-orange-700 mr-4"
-                                >
-                                    ← Back to Restaurants
-                                </Link>
-                                <h1 className="text-2xl font-bold text-gray-900">
-                                    {restaurant.name}
-                                </h1>
-                            </div>
-                            <CartIcon />
+                {/* Shared Navbar */}
+                <Navbar />
+
+                {/* Compact back link + title (below navbar) */}
+                <div className="bg-white">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                        <div className="flex items-center space-x-4">
+                            <Link
+                                href="/"
+                                className="text-orange-600 hover:text-orange-700"
+                            >
+                                ← {t("back_to_dashboard")}
+                            </Link>
+                            <h1 className="text-2xl font-bold text-gray-900">
+                                {restaurant.name}
+                            </h1>
                         </div>
                     </div>
-                </header>
+                </div>
 
                 {/* Restaurant Header */}
                 <section className="bg-white">

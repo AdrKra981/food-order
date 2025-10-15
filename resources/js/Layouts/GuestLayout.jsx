@@ -1,5 +1,5 @@
 import FoodieGoLogo from "@/Components/FoodieGoLogo";
-import { Link, usePage } from "@inertiajs/react";
+import { Link, usePage, router } from "@inertiajs/react";
 import { useState } from "react";
 import useTrans from "@/Hooks/useTrans";
 
@@ -37,7 +37,7 @@ export default function GuestLayout({ children }) {
                                 },
                                 body: JSON.stringify({ locale: newLocale }),
                             });
-                            window.location.reload();
+                            router.reload();
                         }}
                         className="border-gray-200 rounded-md text-sm"
                     >

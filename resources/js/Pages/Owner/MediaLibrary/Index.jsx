@@ -108,8 +108,8 @@ export default function MediaIndex() {
                                         }`}
                                     >
                                         {isSelecting
-                                            ? "Cancel Selection"
-                                            : "Select Images"}
+                                            ? t("cancel")
+                                            : t("select_images")}
                                     </button>
                                 )}
                                 <Link
@@ -117,7 +117,7 @@ export default function MediaIndex() {
                                     className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200"
                                 >
                                     <PlusIcon className="w-5 h-5 mr-2" />
-                                    Upload Images
+                                    {t("upload")}
                                 </Link>
                             </div>
                         </div>
@@ -133,8 +133,8 @@ export default function MediaIndex() {
                                         >
                                             {selectedItems.length ===
                                             media.length
-                                                ? "Deselect All"
-                                                : "Select All"}
+                                                ? t("deselect_all")
+                                                : t("select_all")}
                                         </button>
                                         <span className="text-gray-600">
                                             {selectedItems.length} of{" "}
@@ -147,8 +147,9 @@ export default function MediaIndex() {
                                             className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md transition-colors duration-200"
                                         >
                                             <TrashIcon className="w-4 h-4 mr-2" />
-                                            Delete Selected (
-                                            {selectedItems.length})
+                                            {t("delete_selected", {
+                                                count: selectedItems.length,
+                                            })}
                                         </button>
                                     )}
                                 </div>

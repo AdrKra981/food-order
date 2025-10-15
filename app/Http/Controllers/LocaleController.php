@@ -14,11 +14,7 @@ class LocaleController extends Controller
 
         $request->session()->put('locale', $request->input('locale'));
 
-        // Return a simple JSON response for XHR and a redirect for traditional POST
-        if ($request->wantsJson()) {
-            return response()->json(['locale' => $request->input('locale')]);
-        }
-
-        return back();
+        // Always return JSON to make this endpoint safe for XHR/fetch calls
+        return response()->json(['locale' => $request->input('locale')], 200);
     }
 }

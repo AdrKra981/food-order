@@ -249,17 +249,19 @@ export default function Index() {
 
 // Confirm modal rendered at module bottom to avoid interrupting JSX above
 export function ConfirmModalWrapper({ open, onClose, onConfirm, name }) {
+    const { t } = useTrans();
+
     return (
         <ConfirmModal
             open={open}
-            title={name ? `Delete ${name}` : "Delete item"}
+            title={name ? `${t("delete")} ${name}` : t("delete_item")}
             message={
                 name
-                    ? `Are you sure you want to delete "${name}"? This action cannot be undone.`
-                    : "Are you sure you want to delete this item?"
+                    ? t("delete_item_message", { name })
+                    : t("delete_item_generic")
             }
-            confirmText={"Delete"}
-            cancelText={"Cancel"}
+            confirmText={t("delete")}
+            cancelText={t("cancel")}
             onConfirm={onConfirm}
             onCancel={onClose}
         />

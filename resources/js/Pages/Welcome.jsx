@@ -2,7 +2,7 @@ import CartIcon from "@/Components/CartIcon";
 import FoodieGoLogo from "@/Components/FoodieGoLogo";
 import LocationIQAutocomplete from "@/Components/LocationIQAutocomplete";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage, router } from "@inertiajs/react";
 import { useState } from "react";
 import useTrans from "@/Hooks/useTrans";
 
@@ -151,7 +151,7 @@ export default function Welcome({
                                                         }),
                                                     }
                                                 );
-                                                window.location.reload();
+                                                router.reload();
                                             }}
                                             className="ml-2 border-gray-200 rounded-md text-sm"
                                         >

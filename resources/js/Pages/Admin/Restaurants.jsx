@@ -29,7 +29,7 @@ export default function AdminRestaurants({ restaurants, filters }) {
     const { t } = useTrans();
 
     const [confirmOpen, setConfirmOpen] = useState(false);
-    const [confirmAction, setConfirmAction] = useState(null); // 'toggle'|'delete'
+    const [confirmAction, setConfirmAction] = useState(null);
     const [selectedRestaurant, setSelectedRestaurant] = useState(null);
 
     const toggleRestaurantStatus = (restaurant) => {
@@ -83,7 +83,6 @@ export default function AdminRestaurants({ restaurants, filters }) {
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    {/* Filter Section */}
                     <div className="bg-white overflow-hidden shadow-sm rounded-lg mb-6">
                         <div className="p-6">
                             <form
@@ -95,7 +94,9 @@ export default function AdminRestaurants({ restaurants, filters }) {
                                         <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                                         <input
                                             type="text"
-                                            placeholder="Search restaurants..."
+                                            placeholder={t(
+                                                "search_restaurants_placeholder"
+                                            )}
                                             value={search}
                                             onChange={(e) =>
                                                 setSearch(e.target.value)
@@ -104,6 +105,7 @@ export default function AdminRestaurants({ restaurants, filters }) {
                                         />
                                     </div>
                                 </div>
+
                                 <div className="min-w-0 md:w-48 relative">
                                     <select
                                         value={status}
@@ -113,36 +115,37 @@ export default function AdminRestaurants({ restaurants, filters }) {
                                         className="appearance-none w-full pl-3 pr-10 py-2 border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500 bg-white cursor-pointer"
                                     >
                                         <option value="">
-                                            All Restaurants
+                                            {t("all_restaurants")}
                                         </option>
                                         <option value="active">
-                                            Active Only
+                                            {t("active_only")}
                                         </option>
                                         <option value="inactive">
-                                            Inactive Only
+                                            {t("inactive_only")}
                                         </option>
                                     </select>
                                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                         <ChevronDownIcon className="h-4 w-4 text-gray-400" />
                                     </div>
                                 </div>
+
                                 <button
                                     type="submit"
                                     className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md font-medium flex items-center gap-2"
                                 >
                                     <FunnelIcon className="h-4 w-4" />
-                                    Filter
+                                    {t("filter")}
                                 </button>
                             </form>
                         </div>
                     </div>
 
-                    {/* Restaurants Table */}
                     <div className="bg-white overflow-hidden shadow-sm rounded-lg">
                         <div className="px-6 py-4 border-b border-gray-200">
                             <div className="flex justify-between items-center">
                                 <h3 className="text-lg font-medium text-gray-900">
-                                    Restaurants ({restaurants.total} total)
+                                    {t("restaurants")} ({restaurants.total}{" "}
+                                    {t("total")})
                                 </h3>
                                 <div className="flex items-center gap-2 text-sm text-gray-500">
                                     <BuildingStorefrontIcon className="h-4 w-4" />
@@ -151,13 +154,13 @@ export default function AdminRestaurants({ restaurants, filters }) {
                                             (r) => r.is_accepted
                                         ).length
                                     }{" "}
-                                    active,{" "}
+                                    {t("active")},{" "}
                                     {
                                         restaurants.data.filter(
                                             (r) => !r.is_accepted
                                         ).length
                                     }{" "}
-                                    inactive
+                                    {t("inactive")}
                                 </div>
                             </div>
                         </div>
@@ -167,22 +170,22 @@ export default function AdminRestaurants({ restaurants, filters }) {
                                 <thead className="bg-gray-50">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Restaurant
+                                            {t("restaurant")}
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Owner
+                                            {t("owner")}
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Cuisine
+                                            {t("cuisine")}
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Location
+                                            {t("location")}
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Status
+                                            {t("status")}
                                         </th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Actions
+                                            {t("actions")}
                                         </th>
                                     </tr>
                                 </thead>
@@ -204,10 +207,13 @@ export default function AdminRestaurants({ restaurants, filters }) {
                                                             {restaurant.name}
                                                         </div>
                                                         <div className="text-sm text-gray-500">
-                                                            Delivery:{" "}
+                                                            {t(
+                                                                "delivery_label"
+                                                            )}{" "}
                                                             {restaurant.delivery_fee ||
                                                                 0}{" "}
-                                                            zł • Min:{" "}
+                                                            zł •{" "}
+                                                            {t("min_label")}{" "}
                                                             {restaurant.minimum_order ||
                                                                 0}{" "}
                                                             zł
@@ -243,8 +249,8 @@ export default function AdminRestaurants({ restaurants, filters }) {
                                                     }`}
                                                 >
                                                     {restaurant.is_accepted
-                                                        ? "Active"
-                                                        : "Inactive"}
+                                                        ? t("active")
+                                                        : t("inactive")}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -255,7 +261,9 @@ export default function AdminRestaurants({ restaurants, filters }) {
                                                             restaurant.id
                                                         )}
                                                         className="text-blue-600 hover:text-blue-900 p-1 rounded"
-                                                        title="View Restaurant"
+                                                        title={t(
+                                                            "view_restaurant"
+                                                        )}
                                                     >
                                                         <EyeIcon className="h-4 w-4" />
                                                     </Link>
@@ -298,39 +306,6 @@ export default function AdminRestaurants({ restaurants, filters }) {
                                 </tbody>
                             </table>
                         </div>
-
-                        {/* Pagination */}
-                        {restaurants.links && (
-                            <div className="bg-white px-4 py-3 border-t border-gray-200">
-                                <div className="flex justify-between items-center">
-                                    <div className="text-sm text-gray-700">
-                                        Showing {restaurants.from} to{" "}
-                                        {restaurants.to} of {restaurants.total}{" "}
-                                        results
-                                    </div>
-                                    <div className="flex gap-2">
-                                        {restaurants.links.map(
-                                            (link, index) => (
-                                                <Link
-                                                    key={index}
-                                                    href={link.url || "#"}
-                                                    className={`px-3 py-1 text-sm rounded ${
-                                                        link.active
-                                                            ? "bg-orange-600 text-white"
-                                                            : link.url
-                                                            ? "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-                                                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                                    }`}
-                                                    dangerouslySetInnerHTML={{
-                                                        __html: link.label,
-                                                    }}
-                                                />
-                                            )
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>
@@ -340,37 +315,40 @@ export default function AdminRestaurants({ restaurants, filters }) {
                 title={
                     confirmAction === "delete"
                         ? selectedRestaurant
-                            ? `Delete ${selectedRestaurant.name}`
-                            : "Delete Restaurant"
+                            ? `${t("delete")} ${selectedRestaurant.name}`
+                            : t("delete_restaurant")
                         : selectedRestaurant
                         ? `${
                               selectedRestaurant.is_accepted
-                                  ? "Deactivate"
-                                  : "Activate"
+                                  ? t("deactivate")
+                                  : t("activate")
                           } ${selectedRestaurant.name}`
-                        : "Confirm"
+                        : t("confirm")
                 }
                 message={
                     confirmAction === "delete"
                         ? selectedRestaurant
-                            ? `Are you sure you want to delete "${selectedRestaurant.name}"? This action cannot be undone.`
+                            ? t("delete_restaurant_message", {
+                                  name: selectedRestaurant.name,
+                              })
                             : ""
                         : selectedRestaurant
-                        ? `Are you sure you want to ${
+                        ? t(
                               selectedRestaurant.is_accepted
-                                  ? "deactivate"
-                                  : "activate"
-                          } "${selectedRestaurant.name}"?`
+                                  ? "deactivate_restaurant_message"
+                                  : "activate_restaurant_message",
+                              { name: selectedRestaurant.name }
+                          )
                         : ""
                 }
                 confirmText={
                     confirmAction === "delete"
-                        ? "Delete"
+                        ? t("delete")
                         : selectedRestaurant && selectedRestaurant.is_accepted
-                        ? "Deactivate"
-                        : "Activate"
+                        ? t("deactivate")
+                        : t("activate")
                 }
-                cancelText={"Cancel"}
+                cancelText={t("cancel")}
                 onConfirm={handleConfirm}
                 onCancel={() => setConfirmOpen(false)}
             />

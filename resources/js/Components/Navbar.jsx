@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { router, usePage } from "@inertiajs/react";
 import useTrans from "@/Hooks/useTrans";
+import CartIcon from "@/Components/CartIcon";
 import { UserIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import FoodieGoLogo from "./FoodieGoLogo";
 
@@ -47,6 +48,7 @@ export default function Navbar() {
                     </div>
 
                     <div className="flex items-center space-x-4">
+                        <CartIcon />
                         {auth.user ? (
                             <div className="relative" ref={dropdownRef}>
                                 <button
@@ -159,8 +161,8 @@ export default function Navbar() {
                                                 locale: newLocale,
                                             }),
                                         });
-                                        // Reload to apply locale changes
-                                        window.location.reload();
+                                        // Reload current Inertia page to apply locale changes without navigating away
+                                        router.reload();
                                     }}
                                     className="ml-2 border-gray-200 rounded-md text-sm"
                                 >

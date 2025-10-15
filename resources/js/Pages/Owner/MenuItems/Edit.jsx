@@ -1,6 +1,7 @@
 import { useForm } from "@inertiajs/react";
 import OwnerLayout from "../../../Layouts/OwnerLayout";
 import MediaSelector from "../../../Components/MediaSelector";
+import useTrans from "@/Hooks/useTrans";
 
 export default function Edit({ menuItem, categories, media }) {
     const { data, setData, put, processing, errors } = useForm({
@@ -215,16 +216,14 @@ export default function Edit({ menuItem, categories, media }) {
                                     href={route("owner.menu-items.index")}
                                     className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
                                 >
-                                    Cancel
+                                    {t("cancel")}
                                 </a>
                                 <button
                                     type="submit"
                                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50"
                                     disabled={processing}
                                 >
-                                    {processing
-                                        ? "Updating..."
-                                        : "Update Menu Item"}
+                                    {processing ? t("processing") : t("update")}
                                 </button>
                             </div>
                         </form>
