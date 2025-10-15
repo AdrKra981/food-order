@@ -56,6 +56,14 @@ class Restaurant extends Model
         return $this->hasMany(Media::class);
     }
 
+    /**
+     * Employees belonging to this restaurant.
+     */
+    public function employees()
+    {
+        return $this->hasMany(User::class, 'restaurant_id');
+    }
+
     public function image()
     {
         return $this->belongsTo(Media::class, 'image_id');

@@ -14,6 +14,7 @@ import {
     XMarkIcon,
     ShoppingBagIcon,
     TagIcon,
+    UserGroupIcon,
 } from "@heroicons/react/24/outline";
 
 export default function OwnerLayout({ header, children }) {
@@ -59,6 +60,12 @@ export default function OwnerLayout({ header, children }) {
             href: route("owner.promo-codes.index"),
             icon: TagIcon,
             current: route().current("owner.promo-codes.*"),
+        },
+        {
+            name: "Employees",
+            href: route("owner.employees.index"),
+            icon: UserGroupIcon,
+            current: route().current("owner.employees.*"),
         },
         {
             name: "Orders",

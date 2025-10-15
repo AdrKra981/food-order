@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Lang;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -29,12 +30,23 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        // Apply locale from session if present so translations align with user choice
+        $sessionLocale = $request->session()->get('locale');
+        if ($sessionLocale) {
+            app()->setLocale($sessionLocale);
+        }
+
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
+            ],
+            // Share current locale and a small translation bag for the UI
+            'lang' => [
+                'locale' => app()->getLocale(),
+                'translations' => fn () => Lang::get('ui'),
             ],
         ]);
     }

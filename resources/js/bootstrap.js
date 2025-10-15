@@ -81,3 +81,38 @@ window.testCSRF = async function () {
         return null;
     }
 };
+
+// --- Laravel Echo + Pusher setup (realtime) ---
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
+
+window.Pusher = Pusher;
+
+try {
+    const key = import.meta.env.VITE_PUSHER_APP_KEY;
+    if (key) {
+        window.Echo = new Echo({
+            broadcaster: "pusher",
+            key,
+            cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+            wsHost:
+                import.meta.env.VITE_PUSHER_HOST ||
+                (import.meta.env.VITE_PUSHER_APP_CLUSTER
+                    ? `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`
+                    : undefined),
+            wsPort: Number(import.meta.env.VITE_PUSHER_PORT || 80),
+            wssPort: Number(import.meta.env.VITE_PUSHER_PORT || 443),
+            forceTLS:
+                (import.meta.env.VITE_PUSHER_SCHEME || "https") === "https",
+            enabledTransports: ["ws", "wss"],
+            authEndpoint: "/broadcasting/auth",
+            auth: {
+                headers: {
+                    "X-CSRF-TOKEN": getCSRFToken(),
+                },
+            },
+        });
+    }
+} catch (e) {
+    console.warn("Echo/Pusher init failed:", e);
+}

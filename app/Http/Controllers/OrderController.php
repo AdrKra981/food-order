@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\PromoCode;
 use App\Services\PromoCodeService;
 use Illuminate\Http\Request;
+use App\Events\OrderCreated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -77,12 +78,17 @@ class OrderController extends Controller
                 });
 
                 // Apply promo code discount if applicable
-                $discountAmount = 0;
+                $discountAmount = 0.0;
                 $totalAmount = $subtotal;
 
                 if ($appliedPromoCode && $appliedPromoCode->restaurant_id == $restaurantId) {
-                    $discountAmount = $this->promoCodeService->calculateCartDiscount($appliedPromoCode, $items);
-                    $totalAmount = $subtotal - $discountAmount;
+                    $calc = $this->promoCodeService->calculateCartDiscount($appliedPromoCode, $items);
+                    if (is_array($calc)) {
+                        $discountAmount = (float) ($calc['discount'] ?? 0);
+                    } else {
+                        $discountAmount = (float) $calc;
+                    }
+                    $totalAmount = (float) $subtotal - $discountAmount;
                     $totalDiscountAmount += $discountAmount;
                 }
 
@@ -118,6 +124,8 @@ class OrderController extends Controller
                 }
 
                 $orders[] = $order;
+                // broadcast per-restaurant new order
+                event(new OrderCreated($order));
             }
 
             // Record promo code usage if applied

@@ -1,18 +1,11 @@
-
 <?php
-// Restaurant Management API for tests (for feature tests only)
-Route::middleware('auth')->group(function () {
-    Route::post('/restaurants', [\App\Http\Controllers\RestaurantController::class, 'store']);
-    Route::patch('/restaurants/{id}/approve', [\App\Http\Controllers\RestaurantController::class, 'approve']);
-    Route::put('/restaurants/{id}', [\App\Http\Controllers\RestaurantController::class, 'update']);
-    Route::delete('/restaurants/{id}', [\App\Http\Controllers\RestaurantController::class, 'destroy']);
-});
-
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\RestaurantApprovalController;
+use App\Http\Controllers\Auth\ForcedPasswordChangeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Owner\EmployeeController;
 use App\Http\Controllers\Owner\MediaController;
 use App\Http\Controllers\Owner\MenuCategoryController;
 use App\Http\Controllers\Owner\MenuItemController;
@@ -21,10 +14,17 @@ use App\Http\Controllers\Owner\PromoCodeController;
 use App\Http\Controllers\Owner\ReportsController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+// Restaurant Management API for tests (for feature tests only)
+Route::middleware('auth')->group(function () {
+    Route::post('/restaurants', [\App\Http\Controllers\RestaurantController::class, 'store']);
+    Route::patch('/restaurants/{id}/approve', [\App\Http\Controllers\RestaurantController::class, 'approve']);
+    Route::put('/restaurants/{id}', [\App\Http\Controllers\RestaurantController::class, 'update']);
+    Route::delete('/restaurants/{id}', [\App\Http\Controllers\RestaurantController::class, 'destroy']);
+});
 
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/restaurant/{restaurant}', [HomeController::class, 'show'])->name('restaurant.show');
@@ -48,7 +48,6 @@ Route::prefix('api/cart')->name('cart.')->group(function () {
 
 // Promo code application route (for feature/API tests)
 use App\Http\Controllers\PromoCodeApplicationController;
-
 Route::post('/api/orders/apply-promo', [PromoCodeApplicationController::class, 'apply'])->name('orders.apply-promo');
 
 // Promo code validation API (requires auth)
@@ -84,6 +83,8 @@ Route::get('/dashboard', function () {
             return redirect()->route('admin.dashboard');
         case App\Enums\UserRole::OWNER:
             return redirect()->route('owner.dashboard');
+        case App\Enums\UserRole::EMPLOYEE:
+            return redirect()->route('employee.orders.index');
         case App\Enums\UserRole::CLIENT:
         default:
             return redirect()->route('customer.orders.index');
@@ -94,6 +95,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Force password change on first login
+    Route::get('/password/force-change', [ForcedPasswordChangeController::class, 'show'])->name('password.force-change.show');
+    Route::post('/password/force-change', [ForcedPasswordChangeController::class, 'update'])->name('password.force-change.update');
 
     // Customer Orders
     Route::prefix('customer')->name('customer.')->group(function () {
@@ -114,6 +119,16 @@ Route::middleware('auth')->group(function () {
         ]);
     });
 });
+
+// Employee routes
+Route::middleware(['auth', 'verified', 'is_employee'])
+    ->prefix('employee')
+    ->name('employee.')
+    ->group(function () {
+        Route::get('/orders', [\App\Http\Controllers\Employee\OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{order}', [\App\Http\Controllers\Employee\OrderController::class, 'show'])->name('orders.show');
+        Route::patch('/orders/{order}/status', [\App\Http\Controllers\Employee\OrderController::class, 'updateStatus'])->name('orders.update-status');
+    });
 
 Route::middleware(['auth', 'verified', 'is_admin'])->prefix('admin')->group(function () {
     // Dashboard
@@ -155,5 +170,10 @@ Route::middleware(['auth', 'verified', 'owner.approved'])->prefix('owner')->name
     Route::patch('menu-categories/{menuCategory}/toggle-availability', [MenuCategoryController::class, 'toggleAvailability'])->name('menu-categories.toggle-availability');
     Route::resource('menu-items', MenuItemController::class)->except(['show']);
     Route::resource('promo-codes', PromoCodeController::class);
+    // Employees management
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+    Route::patch('/employees/{employee}/toggle', [EmployeeController::class, 'toggleActive'])->name('employees.toggle');
+    Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
 });
 require __DIR__.'/auth.php';

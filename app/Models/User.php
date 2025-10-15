@@ -22,6 +22,9 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'must_change_password',
+        'restaurant_id',
+        'is_active',
     ];
 
     protected $casts = [
@@ -48,6 +51,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'must_change_password' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -57,6 +62,14 @@ class User extends Authenticatable
     public function restaurant()
     {
         return $this->hasOne(Restaurant::class);
+    }
+
+    /**
+     * Restaurant the user belongs to as employee.
+     */
+    public function employer()
+    {
+        return $this->belongsTo(Restaurant::class, 'restaurant_id');
     }
 
     /**

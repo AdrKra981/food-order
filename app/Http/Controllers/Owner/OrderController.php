@@ -7,12 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Events\OrderUpdated;
 
 class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $user = auth()->user();
+        $user = $request->user();
         $restaurant = $user->restaurant;
 
         if (! $restaurant) {
@@ -73,7 +74,7 @@ class OrderController extends Controller
         if (in_array($order->status, [OrderStatus::COMPLETED, OrderStatus::CANCELLED], true)) {
             return response()->json(['message' => 'Cannot update a completed or cancelled order.'], 422);
         }
-        $user = auth()->user();
+    $user = $request->user();
         $restaurant = $user->restaurant;
 
         // If no restaurant, or order does not belong to this restaurant, return 403 for API/JSON requests
@@ -99,6 +100,8 @@ class OrderController extends Controller
         $order->update([
             'status' => $statusMap[$request->status],
         ]);
+
+        event(new OrderUpdated($order->fresh()));
 
         return response()->json([
             'message' => 'Order status updated successfully',
