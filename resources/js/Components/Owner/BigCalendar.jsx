@@ -36,35 +36,43 @@ export default function BigCalendar({
 
     const parseDate = (d) => new Date(d + "T00:00:00");
 
-    const mapShiftsToEvents = useCallback((inputShifts) =>
-        inputShifts.map((s) => {
-            const [sh, sm] = (s.start_time || "00:00").split(":").map(Number);
-            const [eh, em] = (s.end_time || "00:00").split(":").map(Number);
-            const day = s.starts_at?.slice(0, 10) || s.date; // ISO string
-            const base = parseDate(day);
-            const start = set(base, {
-                hours: sh,
-                minutes: sm,
-                seconds: 0,
-                milliseconds: 0,
-            });
-            const end = set(base, {
-                hours: eh,
-                minutes: em,
-                seconds: 0,
-                milliseconds: 0,
-            });
-            return {
-                id: s.id,
-                title: `${s.employee_name} (${s.start_time} - ${s.end_time})`,
-                start,
-                end,
-                resource: s,
-            };
-    }), []);
+    const mapShiftsToEvents = useCallback(
+        (inputShifts) =>
+            inputShifts.map((s) => {
+                const [sh, sm] = (s.start_time || "00:00")
+                    .split(":")
+                    .map(Number);
+                const [eh, em] = (s.end_time || "00:00").split(":").map(Number);
+                const day = s.starts_at?.slice(0, 10) || s.date; // ISO string
+                const base = parseDate(day);
+                const start = set(base, {
+                    hours: sh,
+                    minutes: sm,
+                    seconds: 0,
+                    milliseconds: 0,
+                });
+                const end = set(base, {
+                    hours: eh,
+                    minutes: em,
+                    seconds: 0,
+                    milliseconds: 0,
+                });
+                return {
+                    id: s.id,
+                    title: `${s.employee_name} (${s.start_time} - ${s.end_time})`,
+                    start,
+                    end,
+                    resource: s,
+                };
+            }),
+        []
+    );
 
     // Local events for optimistic updates
-    const mappedEvents = useMemo(() => mapShiftsToEvents(shifts), [mapShiftsToEvents, shifts]);
+    const mappedEvents = useMemo(
+        () => mapShiftsToEvents(shifts),
+        [mapShiftsToEvents, shifts]
+    );
     const [localEvents, setLocalEvents] = useState(mappedEvents);
     // Sync local events when server data changes
     useEffect(() => {

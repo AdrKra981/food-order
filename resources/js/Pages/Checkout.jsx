@@ -98,27 +98,33 @@ const Checkout = ({ stripePublicKey }) => {
     }, [cartByRestaurant, loading]);
 
     // Validate delivery address
-    const validateDeliveryAddress = useCallback(async (coordinates) => {
-        if (!coordinates || data.delivery_type !== "delivery") {
-            setDeliveryValidation(null);
-            return;
-        }
+    const validateDeliveryAddress = useCallback(
+        async (coordinates) => {
+            if (!coordinates || data.delivery_type !== "delivery") {
+                setDeliveryValidation(null);
+                return;
+            }
 
-        setIsValidatingDelivery(true);
-        try {
-            const response = await axios.post("/api/cart/validate-delivery", {
-                lat: coordinates.lat,
-                lng: coordinates.lng,
-            });
+            setIsValidatingDelivery(true);
+            try {
+                const response = await axios.post(
+                    "/api/cart/validate-delivery",
+                    {
+                        lat: coordinates.lat,
+                        lng: coordinates.lng,
+                    }
+                );
 
-            setDeliveryValidation(response.data.data);
-        } catch (error) {
-            console.error("Delivery validation error:", error);
-            setDeliveryValidation(null);
-        } finally {
-            setIsValidatingDelivery(false);
-        }
-    }, [data.delivery_type]);
+                setDeliveryValidation(response.data.data);
+            } catch (error) {
+                console.error("Delivery validation error:", error);
+                setDeliveryValidation(null);
+            } finally {
+                setIsValidatingDelivery(false);
+            }
+        },
+        [data.delivery_type]
+    );
 
     // Handle address selection from LocationIQ
     const handleAddressSelect = (location) => {
