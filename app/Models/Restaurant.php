@@ -56,6 +56,14 @@ class Restaurant extends Model
         return $this->hasMany(Media::class);
     }
 
+    /**
+     * Employees belonging to this restaurant.
+     */
+    public function employees()
+    {
+        return $this->hasMany(User::class, 'restaurant_id');
+    }
+
     public function image()
     {
         return $this->belongsTo(Media::class, 'image_id');
@@ -69,5 +77,10 @@ class Restaurant extends Model
     public function scopereAccepted($query)
     {
         return $query->where('is_accepted', true);
+    }
+
+    public function shifts()
+    {
+        return $this->hasMany(\App\Models\Shift::class);
     }
 }

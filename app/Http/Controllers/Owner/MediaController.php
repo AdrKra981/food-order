@@ -75,9 +75,10 @@ class MediaController extends Controller
             if (config('filesystems.disks.cloudinary.driver') === 'cloudinary') {
                 // Use putFile to let the adapter generate a public_id; set folder option
                 $uploaded = Storage::disk('cloudinary')->putFile($folder, $file);
-                // try to obtain a secure URL for the uploaded resource; if adapter does not
-                // support url(), fall back to storing the adapter identifier
+                    // try to obtain a secure URL from the adapter first; if adapter does not
+                    // support url(), fall back to SDK or store the adapter identifier
                 $path = $uploaded;
+                    // No adapter URL helper available for cloudinary in tests; rely on SDK fallback below
                 try {
                     if (class_exists('\Cloudinary\Cloudinary')) {
                         $cloudinary = new \Cloudinary\Cloudinary(config('cloudinary.cloud_url') ?: env('CLOUDINARY_URL'));
@@ -131,7 +132,8 @@ class MediaController extends Controller
                 $folder = 'restaurants/'.Str::slug($restaurant->name ?: $restaurant->id);
                 if (config('filesystems.disks.cloudinary.driver') === 'cloudinary') {
                     $uploaded = Storage::disk('cloudinary')->putFile($folder, $file);
-                    $path = $uploaded;
+                        $path = $uploaded;
+                        // No adapter URL helper available for cloudinary in tests; rely on SDK fallback below
                     try {
                         if (class_exists('\Cloudinary\Cloudinary')) {
                             $cloudinary = new \Cloudinary\Cloudinary(config('cloudinary.cloud_url'));
@@ -205,7 +207,14 @@ class MediaController extends Controller
     public function destroy($id)
     {
         $user = Auth::user();
-        $media = Media::find($id);
+        $media = $id instanceof Media ? $id : Media::find($id);
+
+        if (! $media) {
+            if (request()->wantsJson()) {
+                return response()->json(['message' => 'Media not found'], 404);
+            }
+            abort(404, 'Media not found');
+        }
 
         if (! $media->restaurant_id) {
             try {

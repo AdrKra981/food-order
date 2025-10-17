@@ -30,7 +30,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        // Ensure the application locale is set from the session (session is available here)
+        // Apply locale from session if present so translations align with user choice
         $sessionLocale = $request->session()->get('locale');
         if ($sessionLocale) {
             app()->setLocale($sessionLocale);
@@ -43,7 +43,7 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
             ],
-            // Locale and translations for front-end components (kept intentionally small).
+            // Share current locale and a small translation bag for the UI
             'lang' => [
                 'locale' => app()->getLocale(),
                 'translations' => fn () => Lang::get('ui'),
