@@ -2,6 +2,7 @@
 
 import js from "@eslint/js";
 import react from "eslint-plugin-react";
+import reactHooks from "eslint-plugin-react-hooks";
 import babelParser from "@babel/eslint-parser";
 
 export default [
@@ -35,12 +36,14 @@ export default [
                 window: "readonly",
                 document: "readonly",
                 console: "readonly",
+                Intl: "readonly",
                 setTimeout: "readonly",
                 clearTimeout: "readonly",
             },
         },
         plugins: {
             react,
+            "react-hooks": reactHooks,
         },
         rules: {
             // Ignore the React identifier when using the new JSX transform
@@ -55,6 +58,9 @@ export default [
             // Mark variables used in JSX as used to avoid false positives
             "react/jsx-uses-vars": "error",
             "react/prop-types": "off",
+            // React hooks rules
+            "react-hooks/rules-of-hooks": "error",
+            "react-hooks/exhaustive-deps": "warn",
         },
         settings: {
             react: {

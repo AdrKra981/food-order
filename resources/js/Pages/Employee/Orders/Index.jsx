@@ -1,7 +1,7 @@
 import EmployeeLayout from "@/Layouts/EmployeeLayout";
 import { Link, router, usePage } from "@inertiajs/react";
 import useTrans from "@/Hooks/useTrans";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export default function Index({ orders, filters, statusCounts }) {
     const { t } = useTrans();
@@ -41,16 +41,16 @@ export default function Index({ orders, filters, statusCounts }) {
             },
             { key: "all", label: t("All") + ` (${statusCounts.all})` },
         ],
-        [statusCounts]
+        [statusCounts, t]
     );
 
-    const changeTab = (key) => {
+    const changeTab = useCallback((key) => {
         router.get(
             route("employee.orders.index"),
             { status: key },
             { preserveState: true, replace: true }
         );
-    };
+    }, []);
 
     const updateStatus = (orderId, status) => {
         if (
@@ -179,7 +179,7 @@ export default function Index({ orders, filters, statusCounts }) {
                 // ignore cleanup errors
             }
         };
-    }, []);
+    }, [page.props?.auth?.user?.restaurant_id, filters.status, t, changeTab]);
 
     // Auto-disable polling when Echo is connected; re-enable if disconnected
     useEffect(() => {
@@ -238,7 +238,7 @@ export default function Index({ orders, filters, statusCounts }) {
             return () => window.clearTimeout(clear);
         }, 50);
         return () => window.clearTimeout(timer);
-    }, [orders?.data]);
+    }, [orders?.data, scrollToOrderId]);
 
     // Polling fallback: detect truly new orders and scroll to the first unseen one
     useEffect(() => {
@@ -269,7 +269,7 @@ export default function Index({ orders, filters, statusCounts }) {
             setScrollToOrderId(target);
             setHighlightOrderId(target);
         }
-    }, [orders?.data]);
+    }, [orders?.data, t]);
 
     return (
         <EmployeeLayout title={t("orders")}>

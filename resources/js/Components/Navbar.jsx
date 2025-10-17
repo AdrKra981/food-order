@@ -6,13 +6,12 @@ import { UserIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import FoodieGoLogo from "./FoodieGoLogo";
 
 export default function Navbar() {
-    const { auth } = usePage().props;
+    const page = usePage();
+    const { auth, lang } = page.props || {};
     const { t } = useTrans();
     const [showUserMenu, setShowUserMenu] = useState(false);
     const dropdownRef = useRef(null);
-    const [locale, setLocale] = useState(
-        (usePage().props.lang && usePage().props.lang.locale) || "en"
-    );
+    const [locale, setLocale] = useState((lang && lang.locale) || "en");
 
     // Close dropdown when clicking outside
     useEffect(() => {

@@ -4,7 +4,7 @@ import { format, parse, startOfWeek, getDay, set } from "date-fns";
 import { enUS, pl } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const locales = {
     en: enUS,
@@ -36,7 +36,7 @@ export default function BigCalendar({
 
     const parseDate = (d) => new Date(d + "T00:00:00");
 
-    const mapShiftsToEvents = (inputShifts) =>
+    const mapShiftsToEvents = useCallback((inputShifts) =>
         inputShifts.map((s) => {
             const [sh, sm] = (s.start_time || "00:00").split(":").map(Number);
             const [eh, em] = (s.end_time || "00:00").split(":").map(Number);
@@ -61,10 +61,10 @@ export default function BigCalendar({
                 end,
                 resource: s,
             };
-        });
+    }), []);
 
     // Local events for optimistic updates
-    const mappedEvents = useMemo(() => mapShiftsToEvents(shifts), [shifts]);
+    const mappedEvents = useMemo(() => mapShiftsToEvents(shifts), [mapShiftsToEvents, shifts]);
     const [localEvents, setLocalEvents] = useState(mappedEvents);
     // Sync local events when server data changes
     useEffect(() => {

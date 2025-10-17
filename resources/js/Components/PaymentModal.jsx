@@ -64,7 +64,7 @@ const CheckoutForm = ({
         };
 
         createPaymentIntent();
-    }, [formData, paymentMethod]);
+    }, [formData, paymentMethod, onError]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();

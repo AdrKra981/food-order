@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Head, router, useForm } from "@inertiajs/react";
 import axios from "axios";
 import {
@@ -98,7 +98,7 @@ const Checkout = ({ stripePublicKey }) => {
     }, [cartByRestaurant, loading]);
 
     // Validate delivery address
-    const validateDeliveryAddress = async (coordinates) => {
+    const validateDeliveryAddress = useCallback(async (coordinates) => {
         if (!coordinates || data.delivery_type !== "delivery") {
             setDeliveryValidation(null);
             return;
@@ -118,7 +118,7 @@ const Checkout = ({ stripePublicKey }) => {
         } finally {
             setIsValidatingDelivery(false);
         }
-    };
+    }, [data.delivery_type]);
 
     // Handle address selection from LocationIQ
     const handleAddressSelect = (location) => {
@@ -168,7 +168,7 @@ const Checkout = ({ stripePublicKey }) => {
         } else if (data.delivery_type !== "delivery") {
             setDeliveryValidation(null);
         }
-    }, [data.delivery_type]);
+    }, [data.delivery_type, addressCoordinates, validateDeliveryAddress]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
