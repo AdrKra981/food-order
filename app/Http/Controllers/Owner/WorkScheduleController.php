@@ -36,18 +36,18 @@ class WorkScheduleController extends Controller
             ->where('restaurant_id', $restaurant->id)
             ->where(function ($q) use ($startOfWeek, $endOfWeek) {
                 $q->whereBetween('starts_at', [$startOfWeek, $endOfWeek])
-                  ->orWhereBetween('ends_at', [$startOfWeek, $endOfWeek])
-                  ->orWhere(function ($q2) use ($startOfWeek, $endOfWeek) {
-                      $q2->where('starts_at', '<=', $startOfWeek)
-                         ->where('ends_at', '>=', $endOfWeek);
-                  });
+                    ->orWhereBetween('ends_at', [$startOfWeek, $endOfWeek])
+                    ->orWhere(function ($q2) use ($startOfWeek, $endOfWeek) {
+                        $q2->where('starts_at', '<=', $startOfWeek)
+                            ->where('ends_at', '>=', $endOfWeek);
+                    });
             })
             ->with(['user:id,name'])
             ->orderBy('starts_at')
             ->get();
 
         // Prepare a simple array for the front-end
-        $shiftsPayload = $shifts->map(function (Shift $s) use ($startOfWeek, $endOfWeek) {
+        $shiftsPayload = $shifts->map(function (Shift $s) {
             return [
                 'id' => $s->id,
                 'user_id' => $s->user_id,
@@ -86,7 +86,9 @@ class WorkScheduleController extends Controller
             $totals[$shift->user_id] = ($totals[$shift->user_id] ?? 0) + $hours;
         }
         // Round to 2 decimals for presentation
-        $totals = array_map(function ($h) { return round($h, 2); }, $totals);
+        $totals = array_map(function ($h) {
+            return round($h, 2);
+        }, $totals);
 
         return Inertia::render('Owner/Employees/Schedule', [
             'employees' => $employees,
@@ -132,7 +134,7 @@ class WorkScheduleController extends Controller
             ->where('user_id', $employee->id)
             ->where(function ($q) use ($startsAt, $endsAt) {
                 $q->where('starts_at', '<', $endsAt)
-                  ->where('ends_at', '>', $startsAt);
+                    ->where('ends_at', '>', $startsAt);
             })
             ->exists();
 
@@ -177,7 +179,7 @@ class WorkScheduleController extends Controller
             ->where('id', '!=', $shift->id)
             ->where(function ($q) use ($startsAt, $endsAt) {
                 $q->where('starts_at', '<', $endsAt)
-                  ->where('ends_at', '>', $startsAt);
+                    ->where('ends_at', '>', $startsAt);
             })
             ->exists();
 
@@ -201,6 +203,7 @@ class WorkScheduleController extends Controller
         abort_unless($restaurant && $shift->restaurant_id === $restaurant->id, 403);
 
         $shift->delete();
+
         return back()->with('success', __('ui.shift_deleted'));
     }
 }

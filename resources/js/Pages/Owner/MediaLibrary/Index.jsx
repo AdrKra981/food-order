@@ -3,6 +3,7 @@ import { usePage } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
 import { useState } from "react";
 import OwnerLayout from "../../../Layouts/OwnerLayout";
+import useTrans from "@/Hooks/useTrans";
 import ConfirmModal from "../../../Components/ConfirmModal";
 import {
     PlusIcon,
@@ -12,6 +13,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 export default function MediaIndex() {
+    const { t } = useTrans();
     const { media } = usePage().props;
     const [selectedItems, setSelectedItems] = useState([]);
     const [isSelecting, setIsSelecting] = useState(false);

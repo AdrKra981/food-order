@@ -1,6 +1,5 @@
 import OwnerLayout from "@/Layouts/OwnerLayout";
 import { Head, Link, usePage, router } from "@inertiajs/react";
-import { useState } from "react";
 import ConfirmModal from "@/Components/ConfirmModal";
 import useTrans from "@/Hooks/useTrans";
 import {
@@ -19,24 +18,7 @@ export default function Index() {
 
     const { t } = useTrans();
 
-    const [confirmOpen, setConfirmOpen] = useState(false);
-    const [pendingDeleteId, setPendingDeleteId] = useState(null);
-    const [pendingDeleteName, setPendingDeleteName] = useState(null);
-
-    const handleDelete = (id, name) => {
-        setPendingDeleteId(id);
-        setPendingDeleteName(name || null);
-        setConfirmOpen(true);
-    };
-
-    const confirmDelete = () => {
-        if (pendingDeleteId) {
-            router.delete(route("owner.menu-items.destroy", pendingDeleteId));
-        }
-        setConfirmOpen(false);
-        setPendingDeleteId(null);
-        setPendingDeleteName(null);
-    };
+    // Delete confirmation handled inline per item; no global modal state needed
 
     const getPriorityBadge = (priority) => {
         switch (priority) {
@@ -188,12 +170,22 @@ export default function Index() {
                                                         <PencilIcon className="h-4 w-4" />
                                                     </Link>
                                                     <button
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                item.id,
-                                                                item.name
-                                                            )
-                                                        }
+                                                        onClick={() => {
+                                                            if (
+                                                                window.confirm(
+                                                                    t(
+                                                                        "confirm_delete_item"
+                                                                    )
+                                                                )
+                                                            ) {
+                                                                router.delete(
+                                                                    route(
+                                                                        "owner.menu-items.destroy",
+                                                                        item.id
+                                                                    )
+                                                                );
+                                                            }
+                                                        }}
                                                         className="text-red-600 hover:text-red-900"
                                                         title={t("delete_item")}
                                                     >

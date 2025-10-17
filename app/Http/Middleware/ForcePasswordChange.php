@@ -25,7 +25,7 @@ class ForcePasswordChange
                 'password.force-change.update',
                 'logout',
             ];
-            if (!in_array($routeName, $allowed, true)) {
+            if (! in_array($routeName, $allowed, true)) {
                 return redirect()->route('password.force-change.show');
             }
         }

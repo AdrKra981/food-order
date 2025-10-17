@@ -5,6 +5,7 @@ import {
     InformationCircleIcon,
     CheckCircleIcon,
 } from "@heroicons/react/24/outline";
+import useTrans from "@/Hooks/useTrans";
 
 // Confirmation Modal Component
 export function ConfirmationModal({
@@ -18,7 +19,7 @@ export function ConfirmationModal({
     type = "warning",
     isLoading = false,
 }) {
-    const { t } = require("@/Hooks/useTrans")();
+    const { t } = useTrans();
     const iconMap = {
         warning: ExclamationTriangleIcon,
         error: ExclamationTriangleIcon,

@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\RestaurantApprovalController;
 use App\Http\Controllers\Auth\ForcedPasswordChangeController;
@@ -52,6 +53,7 @@ Route::prefix('api/cart')->name('cart.')->group(function () {
 
 // Promo code application route (for feature/API tests)
 use App\Http\Controllers\PromoCodeApplicationController;
+
 Route::post('/api/orders/apply-promo', [PromoCodeApplicationController::class, 'apply'])->name('orders.apply-promo');
 
 // Promo code validation API (requires auth)

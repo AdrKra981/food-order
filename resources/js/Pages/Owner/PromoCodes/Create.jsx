@@ -7,7 +7,7 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
-export default function Create({ auth, categories }) {
+export default function Create({ categories }) {
     const { data, setData, post, processing, errors } = useForm({
         code: "",
         name: "",

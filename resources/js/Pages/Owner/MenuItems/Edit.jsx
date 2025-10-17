@@ -4,6 +4,7 @@ import MediaSelector from "../../../Components/MediaSelector";
 import useTrans from "@/Hooks/useTrans";
 
 export default function Edit({ menuItem, categories, media }) {
+    const { t } = useTrans();
     const { data, setData, put, processing, errors } = useForm({
         name: menuItem.name,
         description: menuItem.description || "",

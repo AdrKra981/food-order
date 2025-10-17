@@ -28,8 +28,12 @@ class CloudinarySdkMockTest extends TestCase
 
     public function test_upload_uses_cloudinary_sdk_to_generate_url()
     {
-        Storage::shouldReceive('disk')->with('cloudinary')->andReturn($disk = new class {
-            public function putFile($folder, $file) { return 'restaurants/test/public_id'; }
+        Storage::shouldReceive('disk')->with('cloudinary')->andReturn($disk = new class
+        {
+            public function putFile($folder, $file)
+            {
+                return 'restaurants/test/public_id';
+            }
         });
 
         // Setup user + restaurant and perform upload
@@ -41,8 +45,8 @@ class CloudinarySdkMockTest extends TestCase
         $file = UploadedFile::fake()->image('photo.jpg');
 
         config(['filesystems.disks.cloudinary.driver' => 'cloudinary']);
-    // Ensure we don't try to hit real SDK in tests
-    config(['cloudinary.cloud_url' => null]);
+        // Ensure we don't try to hit real SDK in tests
+        config(['cloudinary.cloud_url' => null]);
 
         $response = $this->postJson(route('owner.media.store'), [
             'file' => $file,
@@ -60,8 +64,12 @@ class CloudinarySdkMockTest extends TestCase
 
     public function test_delete_falls_back_to_cloudinary_sdk_destroy_when_filesystem_delete_fails()
     {
-        Storage::shouldReceive('disk')->with('cloudinary')->andReturn($disk = new class {
-            public function delete($id) { return false; }
+        Storage::shouldReceive('disk')->with('cloudinary')->andReturn($disk = new class
+        {
+            public function delete($id)
+            {
+                return false;
+            }
         });
 
         // Create owner/restaurant/media record
@@ -85,10 +93,10 @@ class CloudinarySdkMockTest extends TestCase
         $this->actingAs($owner);
 
         config(['filesystems.disks.cloudinary.driver' => 'cloudinary']);
-    config(['cloudinary.cloud_url' => null]);
+        config(['cloudinary.cloud_url' => null]);
 
-    // Call controller method directly to avoid route middleware (authorization)
-    app(MediaController::class)->destroy($media);
+        // Call controller method directly to avoid route middleware (authorization)
+        app(MediaController::class)->destroy($media);
 
         $this->assertDatabaseMissing('media', ['id' => $media->id]);
     }

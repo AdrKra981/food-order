@@ -21,7 +21,7 @@ class OrderUpdated implements ShouldBroadcastNow
 
     public function broadcastOn(): Channel
     {
-        return new PrivateChannel('restaurant.' . $this->order->restaurant_id);
+        return new PrivateChannel('restaurant.'.$this->order->restaurant_id);
     }
 
     public function broadcastAs(): string

@@ -2,6 +2,7 @@ import { useForm } from "@inertiajs/react";
 import { Link } from "@inertiajs/react";
 import { useState, useRef } from "react";
 import OwnerLayout from "../../../Layouts/OwnerLayout";
+import useTrans from "@/Hooks/useTrans";
 import {
     CloudArrowUpIcon,
     XMarkIcon,
@@ -9,6 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 export default function MediaCreate() {
+    const { t } = useTrans();
     const { data, setData, post, processing, errors } = useForm({
         files: [],
     });

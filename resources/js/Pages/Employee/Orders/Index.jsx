@@ -98,7 +98,7 @@ export default function Index({ orders, filters, statusCounts }) {
     const REFRESH_MS = 10000;
     useEffect(() => {
         if (!autoRefresh) return;
-        const id = setInterval(() => {
+        const id = window.setInterval(() => {
             if (document.hidden) return; // skip when tab not visible
             router.reload({
                 only: ["orders", "statusCounts"],
@@ -106,7 +106,7 @@ export default function Index({ orders, filters, statusCounts }) {
                 preserveScroll: true,
             });
         }, REFRESH_MS);
-        return () => clearInterval(id);
+        return () => window.clearInterval(id);
     }, [autoRefresh]);
 
     // Realtime via Echo (if configured)
@@ -122,11 +122,13 @@ export default function Index({ orders, filters, statusCounts }) {
                         number: newOrder.order_number || newOrder.id,
                     });
                     window.dispatchEvent(
-                        new CustomEvent("toast", {
+                        new window.CustomEvent("toast", {
                             detail: { message: msg, type: "success" },
                         })
                     );
-                } catch (_) {}
+                } catch {
+                    // ignore toast errors
+                }
                 // If current tab excludes the new order, switch to a tab that includes it
                 // New orders are usually in 'pending' and 'active'
                 const current = filters.status || "active";
@@ -173,7 +175,9 @@ export default function Index({ orders, filters, statusCounts }) {
                 channel.stopListening("order.created", onCreated);
                 channel.stopListening("order.updated", onUpdated);
                 window.Echo.leave(`private-restaurant.${restaurantId}`);
-            } catch (_) {}
+            } catch {
+                // ignore cleanup errors
+            }
         };
     }, []);
 
@@ -183,8 +187,10 @@ export default function Index({ orders, filters, statusCounts }) {
             !window.Echo ||
             !window.Echo.connector ||
             !window.Echo.connector.pusher
-        )
+        ) {
+            // Echo not configured; keep polling
             return;
+        }
         const pusher = window.Echo.connector.pusher;
         const onConnected = () => setAutoRefresh(false);
         const onDisconnected = () => setAutoRefresh(true);
@@ -198,7 +204,9 @@ export default function Index({ orders, filters, statusCounts }) {
                 pusher.connection.unbind("connected", onConnected);
                 pusher.connection.unbind("disconnected", onDisconnected);
                 pusher.connection.unbind("failed", onDisconnected);
-            } catch (_) {}
+            } catch {
+                // ignore cleanup errors
+            }
         };
     }, []);
 
@@ -223,10 +231,13 @@ export default function Index({ orders, filters, statusCounts }) {
             // clear scroll target but keep highlight a bit
             setScrollToOrderId(null);
             // Remove highlight after 3 seconds
-            const clear = setTimeout(() => setHighlightOrderId(null), 3000);
-            return () => clearTimeout(clear);
+            const clear = window.setTimeout(
+                () => setHighlightOrderId(null),
+                3000
+            );
+            return () => window.clearTimeout(clear);
         }, 50);
-        return () => clearTimeout(timer);
+        return () => window.clearTimeout(timer);
     }, [orders?.data]);
 
     // Polling fallback: detect truly new orders and scroll to the first unseen one
@@ -242,11 +253,13 @@ export default function Index({ orders, filters, statusCounts }) {
                         number: o.order_number || o.id,
                     });
                     window.dispatchEvent(
-                        new CustomEvent("toast", {
+                        new window.CustomEvent("toast", {
                             detail: { message: msg, type: "success" },
                         })
                     );
-                } catch (_) {}
+                } catch {
+                    // ignore toast errors
+                }
                 break; // first new one at the top due to sorting
             }
         }

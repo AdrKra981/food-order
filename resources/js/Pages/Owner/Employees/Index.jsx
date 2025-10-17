@@ -1,10 +1,10 @@
 import OwnerLayout from "@/Layouts/OwnerLayout";
-import { Head, Link, useForm, usePage, router } from "@inertiajs/react";
+import { Head, Link, useForm, router } from "@inertiajs/react";
 import useTrans from "@/Hooks/useTrans";
 
 export default function EmployeesIndex({ employees }) {
     const { t } = useTrans();
-    const { auth } = usePage().props;
+    // const { auth } = usePage().props;
     const { data, setData, post, processing, reset, errors } = useForm({
         name: "",
         email: "",

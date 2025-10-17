@@ -40,7 +40,7 @@ class OwnerShiftsTest extends TestCase
             'is_active' => true,
         ]);
 
-    $this->actingAs($owner);
+        $this->actingAs($owner);
 
         // Create a shift
         $resp = $this->post(route('owner.shifts.store'), [
@@ -87,8 +87,8 @@ class OwnerShiftsTest extends TestCase
             'user_id' => $employee1->id,
         ]);
 
-    /** @var User $owner2 */
-    $owner2 = User::factory()->create(['role' => UserRole::OWNER, 'email_verified_at' => now()]);
+        /** @var User $owner2 */
+        $owner2 = User::factory()->create(['role' => UserRole::OWNER, 'email_verified_at' => now()]);
         $restaurant2 = Restaurant::factory()->create(['user_id' => $owner2->id, 'is_accepted' => true]);
 
         $this->actingAs($owner2);

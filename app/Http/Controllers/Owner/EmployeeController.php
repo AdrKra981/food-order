@@ -19,7 +19,7 @@ class EmployeeController extends Controller
         $restaurant = $owner->restaurant; // one restaurant per owner
 
         $employees = $restaurant
-            ? $restaurant->employees()->where('role', UserRole::EMPLOYEE)->get(['id','name','email','is_active'])
+            ? $restaurant->employees()->where('role', UserRole::EMPLOYEE)->get(['id', 'name', 'email', 'is_active'])
             : collect();
 
         return Inertia::render('Owner/Employees/Index', [
@@ -35,8 +35,8 @@ class EmployeeController extends Controller
         abort_unless($restaurant, 403);
 
         $data = $request->validate([
-            'name' => ['required','string','max:255'],
-            'email' => ['required','email','max:255','unique:users,email'],
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
         ]);
 
         $tempPassword = Str::password(12);
@@ -61,7 +61,7 @@ class EmployeeController extends Controller
         $restaurant = $owner->restaurant;
         abort_unless($restaurant && $employee->restaurant_id === $restaurant->id, 403);
 
-        $employee->is_active = !$employee->is_active;
+        $employee->is_active = ! $employee->is_active;
         $employee->save();
 
         return back()->with('success', __('Employee :status.', ['status' => $employee->is_active ? __('activated') : __('deactivated')]));

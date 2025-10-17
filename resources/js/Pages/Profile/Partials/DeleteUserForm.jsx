@@ -6,9 +6,10 @@ import SecondaryButton from "@/Components/SecondaryButton";
 import TextInput from "@/Components/TextInput";
 import { useForm } from "@inertiajs/react";
 import { useRef, useState } from "react";
+import useTrans from "@/Hooks/useTrans";
 
 export default function DeleteUserForm({ className = "" }) {
-    const { t } = require("@/Hooks/useTrans")();
+    const { t } = useTrans();
     const [confirmingUserDeletion, setConfirmingUserDeletion] = useState(false);
     const passwordInput = useRef();
 

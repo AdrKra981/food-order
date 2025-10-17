@@ -75,10 +75,10 @@ class MediaController extends Controller
             if (config('filesystems.disks.cloudinary.driver') === 'cloudinary') {
                 // Use putFile to let the adapter generate a public_id; set folder option
                 $uploaded = Storage::disk('cloudinary')->putFile($folder, $file);
-                    // try to obtain a secure URL from the adapter first; if adapter does not
-                    // support url(), fall back to SDK or store the adapter identifier
+                // try to obtain a secure URL from the adapter first; if adapter does not
+                // support url(), fall back to SDK or store the adapter identifier
                 $path = $uploaded;
-                    // No adapter URL helper available for cloudinary in tests; rely on SDK fallback below
+                // No adapter URL helper available for cloudinary in tests; rely on SDK fallback below
                 try {
                     if (class_exists('\Cloudinary\Cloudinary')) {
                         $cloudinary = new \Cloudinary\Cloudinary(config('cloudinary.cloud_url') ?: env('CLOUDINARY_URL'));
@@ -132,8 +132,8 @@ class MediaController extends Controller
                 $folder = 'restaurants/'.Str::slug($restaurant->name ?: $restaurant->id);
                 if (config('filesystems.disks.cloudinary.driver') === 'cloudinary') {
                     $uploaded = Storage::disk('cloudinary')->putFile($folder, $file);
-                        $path = $uploaded;
-                        // No adapter URL helper available for cloudinary in tests; rely on SDK fallback below
+                    $path = $uploaded;
+                    // No adapter URL helper available for cloudinary in tests; rely on SDK fallback below
                     try {
                         if (class_exists('\Cloudinary\Cloudinary')) {
                             $cloudinary = new \Cloudinary\Cloudinary(config('cloudinary.cloud_url'));

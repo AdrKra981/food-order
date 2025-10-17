@@ -4,7 +4,7 @@ import { useState } from "react";
 import useTrans from "@/Hooks/useTrans";
 
 export default function GuestLayout({ children }) {
-    const { t } = useTrans();
+    useTrans();
     const { lang } = usePage().props;
     const [locale, setLocale] = useState((lang && lang.locale) || "en");
 

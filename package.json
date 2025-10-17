@@ -4,7 +4,9 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "lint": "eslint --ext .js,.jsx resources/js",
+        "lint:fix": "eslint --ext .js,.jsx resources/js --fix"
     },
     "devDependencies": {
         "@babel/eslint-parser": "^7.28.0",
@@ -19,6 +21,7 @@
         "concurrently": "^9.0.1",
         "eslint": "^9.34.0",
         "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-hooks": "^4.6.2",
         "laravel-vite-plugin": "^1.2.0",
         "postcss": "^8.4.31",
         "react": "^18.2.0",

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
+use App\Events\OrderCreated;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\PromoCode;
 use App\Services\PromoCodeService;
 use Illuminate\Http\Request;
-use App\Events\OrderCreated;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 

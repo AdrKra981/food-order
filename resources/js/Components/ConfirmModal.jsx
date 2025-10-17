@@ -44,8 +44,8 @@ export default function ConfirmModal({
                             onClick={() => {
                                 try {
                                     onConfirm && onConfirm();
-                                } catch (e) {
-                                    /* swallow */
+                                } catch {
+                                    // swallow
                                 }
                                 onCancel && onCancel();
                             }}

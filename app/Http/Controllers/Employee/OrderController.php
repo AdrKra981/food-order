@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Enums\OrderStatus;
+use App\Events\OrderUpdated;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Events\OrderUpdated;
 
 class OrderController extends Controller
 {

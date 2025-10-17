@@ -6,7 +6,6 @@ use App\Models\Restaurant;
 use App\Models\Shift;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
  * @extends Factory<\App\Models\Shift>

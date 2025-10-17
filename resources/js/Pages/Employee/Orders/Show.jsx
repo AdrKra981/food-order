@@ -187,11 +187,11 @@ function useOrderAutoRefresh(orderId) {
 
     useEffect(() => {
         if (!autoRefresh) return;
-        const id = setInterval(() => {
+        const id = window.setInterval(() => {
             if (document.hidden) return;
             router.reload({ only: ["order"], preserveScroll: true });
         }, REFRESH_MS);
-        return () => clearInterval(id);
+        return () => window.clearInterval(id);
     }, [autoRefresh, orderId]);
 
     // Auto-disable if Echo (Pusher) is connected; re-enable if disconnected
@@ -214,7 +214,9 @@ function useOrderAutoRefresh(orderId) {
                 pusher.connection.unbind("connected", onConnected);
                 pusher.connection.unbind("disconnected", onDisconnected);
                 pusher.connection.unbind("failed", onDisconnected);
-            } catch (_) {}
+            } catch {
+                // ignore cleanup errors
+            }
         };
     }, []);
 
@@ -236,7 +238,9 @@ function useOrderEcho(order) {
             try {
                 channel.stopListening("order.updated");
                 window.Echo.leave(`private-restaurant.${restaurantId}`);
-            } catch (_) {}
+            } catch {
+                // ignore cleanup errors
+            }
         };
     }, [order?.id, order?.restaurant_id]);
 }

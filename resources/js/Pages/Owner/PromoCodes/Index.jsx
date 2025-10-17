@@ -8,7 +8,7 @@ import {
     CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 
-export default function Index({ auth, promoCodes }) {
+export default function Index({ promoCodes }) {
     const [searchTerm, setSearchTerm] = useState("");
 
     const filteredPromoCodes = promoCodes.data.filter(

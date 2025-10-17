@@ -47,6 +47,7 @@ class EmployeeOrdersTest extends TestCase
             'delivery_address' => 'addr',
             'payment_method' => 'cash',
         ]);
+
         return [$employee, $order];
     }
 

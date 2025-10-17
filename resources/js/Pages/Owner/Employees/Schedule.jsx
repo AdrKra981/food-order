@@ -20,6 +20,12 @@ export default function SchedulePage({
     const [showConfirm, setShowConfirm] = useState(false);
     const [pendingDelete, setPendingDelete] = useState(null);
 
+    // Format numbers to two decimals safely
+    const fmtHours = (val) => {
+        const n = Number(val ?? 0);
+        return Number.isFinite(n) ? n.toFixed(2) : "0.00";
+    };
+
     // Form to add a shift
     const { data, setData, post, processing, reset, errors } = useForm({
         user_id: employees?.[0]?.id ?? "",
@@ -314,16 +320,7 @@ export default function SchedulePage({
                                                 {e.name}
                                             </td>
                                             <td className="px-4 py-2 text-sm text-gray-900">
-                                                {(weeklyTotals?.[e.id] ?? 0)
-                                                    .toFixed
-                                                    ? weeklyTotals[
-                                                          e.id
-                                                      ]?.toFixed(2)
-                                                    : Number(
-                                                          weeklyTotals?.[
-                                                              e.id
-                                                          ] ?? 0
-                                                      ).toFixed(2)}
+                                                {fmtHours(weeklyTotals?.[e.id])}
                                             </td>
                                         </tr>
                                     ))}

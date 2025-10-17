@@ -1,6 +1,6 @@
 import { Calendar, Views, dateFnsLocalizer } from "react-big-calendar";
 import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
-import { format, parse, startOfWeek, getDay, addMinutes, set } from "date-fns";
+import { format, parse, startOfWeek, getDay, set } from "date-fns";
 import { enUS, pl } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
@@ -22,7 +22,6 @@ const localizer = (locale) =>
 
 export default function BigCalendar({
     locale = "en",
-    weekStart, // 'YYYY-MM-DD'
     employees = [],
     shifts = [],
     onEventDrop, // ({id, date, start_time, end_time, note})
@@ -36,7 +35,6 @@ export default function BigCalendar({
     const DnDCalendar = withDragAndDrop(Calendar);
 
     const parseDate = (d) => new Date(d + "T00:00:00");
-    const startDate = parseDate(weekStart);
 
     const mapShiftsToEvents = (inputShifts) =>
         inputShifts.map((s) => {
@@ -66,14 +64,12 @@ export default function BigCalendar({
         });
 
     // Local events for optimistic updates
-    const [localEvents, setLocalEvents] = useState(() =>
-        mapShiftsToEvents(shifts)
-    );
+    const mappedEvents = useMemo(() => mapShiftsToEvents(shifts), [shifts]);
+    const [localEvents, setLocalEvents] = useState(mappedEvents);
     // Sync local events when server data changes
     useEffect(() => {
-        setLocalEvents(mapShiftsToEvents(shifts));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(shifts)]);
+        setLocalEvents(mappedEvents);
+    }, [mappedEvents]);
 
     // Calendar min/max to respect opening hours
     const [openH, openM] = (openingHour || "08:00").split(":").map(Number);

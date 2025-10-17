@@ -27,7 +27,9 @@ export default function EmployeeLayout({ title, children }) {
                 pusher.connection.unbind("connected", onConnected);
                 pusher.connection.unbind("disconnected", onDisconnected);
                 pusher.connection.unbind("failed", onDisconnected);
-            } catch (_) {}
+            } catch {
+                // ignore cleanup errors
+            }
         };
     }, []);
 
