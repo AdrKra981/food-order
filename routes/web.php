@@ -12,6 +12,7 @@ use App\Http\Controllers\Owner\MenuItemController;
 use App\Http\Controllers\Owner\OrderController as OwnerOrderController;
 use App\Http\Controllers\Owner\PromoCodeController;
 use App\Http\Controllers\Owner\ReportsController;
+use App\Http\Controllers\Owner\WorkScheduleController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
@@ -175,5 +176,11 @@ Route::middleware(['auth', 'verified', 'owner.approved'])->prefix('owner')->name
     Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
     Route::patch('/employees/{employee}/toggle', [EmployeeController::class, 'toggleActive'])->name('employees.toggle');
     Route::delete('/employees/{employee}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+
+    // Work schedule
+    Route::get('/employees/schedule', [WorkScheduleController::class, 'index'])->name('employees.schedule');
+    Route::post('/shifts', [WorkScheduleController::class, 'store'])->name('shifts.store');
+    Route::patch('/shifts/{shift}', [WorkScheduleController::class, 'update'])->name('shifts.update');
+    Route::delete('/shifts/{shift}', [WorkScheduleController::class, 'destroy'])->name('shifts.destroy');
 });
 require __DIR__.'/auth.php';

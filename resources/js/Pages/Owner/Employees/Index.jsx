@@ -28,6 +28,14 @@ export default function EmployeesIndex({ employees }) {
             <Head title={t("employees") || "Employees"} />
 
             <div className="py-6">
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-4">
+                    <Link
+                        href={route("owner.employees.schedule")}
+                        className="inline-flex items-center px-3 py-2 bg-gray-100 rounded hover:bg-gray-200 text-sm"
+                    >
+                        {t("work_schedule") || "Work schedule"}
+                    </Link>
+                </div>
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="bg-white shadow-sm rounded-lg p-6">
                         <h3 className="text-lg font-medium text-gray-900 mb-4">

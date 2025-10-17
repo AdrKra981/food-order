@@ -78,4 +78,9 @@ class Restaurant extends Model
     {
         return $query->where('is_accepted', true);
     }
+
+    public function shifts()
+    {
+        return $this->hasMany(\App\Models\Shift::class);
+    }
 }
